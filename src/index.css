@@ -1,0 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* (주)아름다운비행 알래스카 프리미엄 디자인 시스템
+   시니어 친화적 UI - 50-60대 타겟
+   큰 폰트, 높은 대비, 넓은 터치 영역
+*/
+
+@layer base {
+  :root {
+    /* Core Colors - High Contrast for Seniors */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+
+    /* Primary - Deep Navy */
+    --primary: 220 60% 22%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - Light Gray */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
+
+    /* Muted */
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 40%;
+
+    /* Accent - Premium Gold */
+    --accent: 43 74% 49%;
+    --accent-foreground: 0 0% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 43 74% 49%;
+
+    --radius: 0.75rem;
+
+    /* Extended Palette - High Contrast */
+    --navy: 220 60% 22%;
+    --navy-light: 220 40% 30%;
+    --gold: 43 74% 49%;
+    --gold-light: 43 60% 65%;
+    --cream: 40 20% 97%;
+    --cream-dark: 40 15% 92%;
+    --snow: 0 0% 100%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(180deg, 
+      hsla(220, 60%, 15%, 0.75) 0%, 
+      hsla(220, 50%, 10%, 0.85) 100%
+    );
+    --gradient-gold: linear-gradient(135deg, 
+      hsl(43, 74%, 49%) 0%, 
+      hsl(38, 70%, 42%) 100%
+    );
+    --gradient-dark: linear-gradient(180deg,
+      hsl(220, 60%, 22%) 0%,
+      hsl(220, 50%, 15%) 100%
+    );
+
+    /* Shadows */
+    --shadow-elegant: 0 4px 20px -4px hsla(0, 0%, 0%, 0.15);
+    --shadow-card: 0 2px 12px -2px hsla(0, 0%, 0%, 0.1);
+    --shadow-gold: 0 4px 24px -4px hsla(43, 74%, 49%, 0.4);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-size: 18px; /* Base font size for seniors */
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .font-display {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer components {
+  /* Senior-Friendly Buttons - Large Touch Targets */
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-3 whitespace-nowrap rounded-2xl 
+           text-lg font-bold transition-all duration-200
+           px-8 py-5 text-primary min-h-[56px];
+    background: var(--gradient-gold);
+  }
+
+  .btn-gold:active {
+    transform: scale(0.98);
+  }
+
+  .btn-outline-light {
+    @apply inline-flex items-center justify-center gap-3 whitespace-nowrap rounded-2xl 
+           text-lg font-semibold transition-all duration-200
+           px-8 py-5 bg-transparent border-2 border-white/50 text-white min-h-[56px];
+  }
+
+  .btn-outline-light:active {
+    @apply bg-white/10;
+  }
+
+  .btn-outline-dark {
+    @apply inline-flex items-center justify-center gap-3 whitespace-nowrap rounded-2xl 
+           text-lg font-semibold transition-all duration-200
+           px-8 py-5 bg-transparent border-2 border-primary/30 text-primary min-h-[56px];
+  }
+
+  .btn-outline-dark:active {
+    @apply bg-primary/5;
+  }
+
+  /* Section Styles - Large for Seniors */
+  .section-title {
+    @apply text-[28px] md:text-[36px] lg:text-[40px] font-bold tracking-tight leading-tight;
+  }
+
+  .section-subtitle {
+    @apply text-lg md:text-xl text-muted-foreground;
+  }
+
+  /* Card Styles */
+  .premium-card {
+    @apply bg-card rounded-2xl overflow-hidden shadow-card;
+  }
+
+  /* Gold Accent Text */
+  .text-gold {
+    color: hsl(var(--gold));
+  }
+
+  /* Background Utilities */
+  .bg-navy {
+    background-color: hsl(var(--navy));
+  }
+
+  .bg-cream {
+    background-color: hsl(var(--cream));
+  }
+
+  /* Scroll Indicator */
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+
+  .animate-bounce-slow {
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  /* Day Card */
+  .day-card {
+    @apply bg-white rounded-2xl shadow-card overflow-hidden;
+  }
+
+  .day-card-header {
+    @apply flex items-center justify-between p-5 cursor-pointer;
+  }
+
+  .day-card-content {
+    @apply px-5 pb-5;
+  }
+}
+
+@layer utilities {
+  /* Safe area for mobile */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Hide scrollbar but keep scroll functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
