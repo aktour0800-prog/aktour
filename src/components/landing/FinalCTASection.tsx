@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Phone, MessageCircle, Check, Users, Award, Tv } from "lucide-react";
+import { Phone, MessageCircle, Check, Users, Award, Tv, TrendingDown, AlertTriangle, Clock, ExternalLink } from "lucide-react";
 
 const FinalCTASection = () => {
   const ref = useRef(null);
@@ -58,6 +58,69 @@ const FinalCTASection = () => {
             <p className="text-2xl md:text-3xl font-bold text-accent">
               빙하는 매년 녹고 있습니다.
             </p>
+          </div>
+        </motion.div>
+
+        {/* 근거 자료 섹션 */}
+        <motion.div
+          className="max-w-4xl mx-auto mb-12 md:mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10">
+            {/* 근거 카드 그리드 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              {/* 빠른 빙하 감소 */}
+              <div className="bg-white/5 rounded-xl p-5 border border-white/10">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
+                    <TrendingDown className="w-5 h-5 text-accent" />
+                  </div>
+                  <h3 className="text-white font-bold text-base">빠른 빙하 감소</h3>
+                </div>
+                <p className="text-white/80 text-sm leading-relaxed">
+                  알래스카는 지구 다른 지역보다 <span className="text-accent font-semibold">2배 이상 빠른</span> 기온 상승을 겪으며, 빙하 질량이 빠르게 줄어들고 있습니다.
+                </p>
+              </div>
+
+              {/* 지속적인 홍수 피해 */}
+              <div className="bg-white/5 rounded-xl p-5 border border-white/10">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
+                    <AlertTriangle className="w-5 h-5 text-accent" />
+                  </div>
+                  <h3 className="text-white font-bold text-base">지속적인 홍수 피해</h3>
+                </div>
+                <p className="text-white/80 text-sm leading-relaxed">
+                  2011년 이후 멘덴홀 빙하 상류의 얼음 둑이 붕괴되면서 <span className="text-accent font-semibold">매년 여름철</span> 홍수가 발생하고 있습니다.
+                </p>
+              </div>
+
+              {/* 위험 증가 */}
+              <div className="bg-white/5 rounded-xl p-5 border border-white/10">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-accent" />
+                  </div>
+                  <h3 className="text-white font-bold text-base">위험 증가</h3>
+                </div>
+                <p className="text-white/80 text-sm leading-relaxed">
+                  2023~2025년 들어 빙하가 녹은 물이 범람하는 주기가 <span className="text-accent font-semibold">짧아지고</span> 피해 규모가 커지고 있습니다.
+                </p>
+              </div>
+            </div>
+
+            {/* 상세 설명 */}
+            <div className="bg-white/5 rounded-xl p-5 border-l-4 border-accent">
+              <p className="text-white/90 text-sm md:text-base leading-relaxed mb-3">
+                알래스카의 빙하는 기후 변화로 인해 매우 빠르게 녹고 있으며, 이로 인해 대규모 침수 및 홍수 피해가 매년 반복되고 있습니다. 특히 멘덴홀 빙하 등의 융해로 인한 빙하 호수 범람으로 준우(Juneau) 지역을 중심으로 주택 및 도로 침수 피해가 심각해지고 있습니다.
+              </p>
+              <div className="flex items-center gap-2 text-white/60 text-xs">
+                <ExternalLink className="w-3 h-3" />
+                <span>출처: YTN 뉴스 (2024. 8. 9.)</span>
+              </div>
+            </div>
           </div>
         </motion.div>
 
