@@ -3,12 +3,20 @@ import { Link, useLocation } from "react-router-dom";
 
 import { contacts } from "@/data/summerCampaignData";
 
-const Header = () => {
+interface HeaderProps {
+  hidden?: boolean;
+}
+
+const Header = ({ hidden = false }: HeaderProps) => {
   const location = useLocation();
   const isSummerPage = location.pathname === "/summer-itinerary" || location.pathname === "/itinerary";
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/20 bg-primary/84 backdrop-blur-xl safe-top">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 border-b border-white/20 bg-primary/84 backdrop-blur-xl safe-top transition-all duration-300 ${
+        hidden ? "-translate-y-full opacity-0 pointer-events-none" : "translate-y-0 opacity-100"
+      }`}
+    >
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-3 py-2.5 sm:px-4 sm:py-3">
         <Link to="/" className="text-white">
           <p className="whitespace-nowrap text-[17px] font-bold leading-none sm:text-[20px]">AlaskaTrip</p>
@@ -38,6 +46,3 @@ const Header = () => {
 };
 
 export default Header;
-
-
-

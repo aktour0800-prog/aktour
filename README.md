@@ -71,3 +71,31 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## Admin Lead DB Setup (Vercel)
+
+This project now includes:
+- `POST /api/leads/waitlist` (waitlist save)
+- `POST /api/leads/like` (like event save)
+- `POST /api/admin/login` (admin login)
+- `POST /api/admin/logout` (admin logout)
+- `GET /api/admin/leads` (admin lead list)
+- Admin page route: `/admin`
+
+### Required environment variables
+
+Set these in Vercel Project Settings -> Environment Variables:
+
+- `DATABASE_URL`: PostgreSQL connection string
+- `ADMIN_PASSWORD`: password used on `/admin`
+- `ADMIN_SESSION_SECRET`: random long secret for session signing
+
+Example local `.env.local`:
+
+```bash
+DATABASE_URL=postgres://USER:PASSWORD@HOST:5432/DBNAME?sslmode=require
+ADMIN_PASSWORD=change-this-password
+ADMIN_SESSION_SECRET=change-this-secret-very-long-random-string
+```
+
+`lead_events` table and index are created automatically on first API request.
