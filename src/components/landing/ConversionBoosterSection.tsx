@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+ï»¿import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
   CalendarDays,
   CheckCircle2,
@@ -112,7 +112,7 @@ const ConversionBoosterSection = () => {
     return Math.ceil((departureAt.getTime() - now.getTime()) / msPerDay);
   }, [departureAt, now]);
 
-  const dDayLabel = dDay > 0 ? `D-${dDay}` : dDay === 0 ? "D-DAY" : "Ãâ¹ß ÀÌÈÄ";
+  const dDayLabel = dDay > 0 ? `D-${dDay}` : dDay === 0 ? "D-DAY" : "ì¶œë°œ ì´í›„";
 
   const recruitmentProgress = useMemo(() => {
     const total = departureAt.getTime() - recruitmentOpenAt.getTime();
@@ -220,12 +220,12 @@ const ConversionBoosterSection = () => {
     const phone = waitlistPhone.replace(/\D/g, "");
 
     if (name.length < 2) {
-      setWaitlistFeedback({ type: "error", message: "ÀÌ¸§À» 2±ÛÀÚ ÀÌ»ó ÀÔ·ÂÇØÁÖ¼¼¿ä." });
+      setWaitlistFeedback({ type: "error", message: "ì´ë¦„ì„ 2ê¸€ìž ì´ìƒ ìž…ë ¥í•´ì£¼ì„¸ìš”." });
       return;
     }
 
     if (phone.length < 10 || phone.length > 11) {
-      setWaitlistFeedback({ type: "error", message: "ÈÞ´ëÆù ¹øÈ£¸¦ Á¤È®È÷ ÀÔ·ÂÇØÁÖ¼¼¿ä." });
+      setWaitlistFeedback({ type: "error", message: "íœ´ëŒ€í° ë²ˆí˜¸ë¥¼ ì •í™•ížˆ ìž…ë ¥í•´ì£¼ì„¸ìš”." });
       return;
     }
 
@@ -236,7 +236,7 @@ const ConversionBoosterSection = () => {
     if (existingSeasonEntry) {
       setWaitlistFeedback({
         type: "error",
-        message: "ÀÌ ¹øÈ£´Â ÀÌ¹Ì ÇØ´ç ½ÃÁð¿¡ µî·ÏµÇ¾î ÀÖ½À´Ï´Ù.",
+        message: "ì´ ë²ˆí˜¸ëŠ” ì´ë¯¸ í•´ë‹¹ ì‹œì¦Œì— ë“±ë¡ë˜ì–´ ìžˆìŠµë‹ˆë‹¤.",
       });
       return;
     }
@@ -256,20 +256,20 @@ const ConversionBoosterSection = () => {
         }),
       });
     } catch {
-      setWaitlistFeedback({ type: "error", message: "¼­¹ö ¿¬°á¿¡ ½ÇÆÐÇß½À´Ï´Ù. Àá½Ã ÈÄ ´Ù½Ã ½ÃµµÇØÁÖ¼¼¿ä." });
+      setWaitlistFeedback({ type: "error", message: "ì„œë²„ ì—°ê²°ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤. ìž ì‹œ í›„ ë‹¤ì‹œ ì‹œë„í•´ì£¼ì„¸ìš”." });
       return;
     }
 
     if (waitlistResponse.status === 409) {
       setWaitlistFeedback({
         type: "error",
-        message: "ÀÌ¹Ì µî·ÏµÈ ¹øÈ£ÀÔ´Ï´Ù. ½ÃÁð ¿ÀÇÂ ½Ã ¿ì¼± ¿¬¶ôµå¸³´Ï´Ù.",
+        message: "ì´ë¯¸ ë“±ë¡ëœ ë²ˆí˜¸ìž…ë‹ˆë‹¤. ì‹œì¦Œ ì˜¤í”ˆ ì‹œ ìš°ì„  ì—°ë½ë“œë¦½ë‹ˆë‹¤.",
       });
       return;
     }
 
     if (!waitlistResponse.ok) {
-      setWaitlistFeedback({ type: "error", message: "ÀúÀå Áß ¿À·ù°¡ ¹ß»ýÇß½À´Ï´Ù. ´Ù½Ã ½ÃµµÇØÁÖ¼¼¿ä." });
+      setWaitlistFeedback({ type: "error", message: "ì €ìž¥ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤. ë‹¤ì‹œ ì‹œë„í•´ì£¼ì„¸ìš”." });
       return;
     }
 
@@ -288,7 +288,7 @@ const ConversionBoosterSection = () => {
       entries: [...prev.entries, nextEntry],
     }));
 
-    setWaitlistFeedback({ type: "success", message: "´ë±â µî·Ï ¿Ï·á. ½ÃÁð ¿ÀÇÂ Áï½Ã ¿ì¼± ¿¬¶ôµå¸®°Ú½À´Ï´Ù." });
+    setWaitlistFeedback({ type: "success", message: "ëŒ€ê¸° ë“±ë¡ ì™„ë£Œ. ì‹œì¦Œ ì˜¤í”ˆ ì¦‰ì‹œ ìš°ì„  ì—°ë½ë“œë¦¬ê² ìŠµë‹ˆë‹¤." });
   };
 
   return (
@@ -298,7 +298,7 @@ const ConversionBoosterSection = () => {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="deadline-chip">
               <Flame className="h-4 w-4" />
-              Á¤¿ø {summerCampaignClock.capacity}¸í ÇÑÁ¤
+              ì •ì› {summerCampaignClock.capacity}ëª… í•œì •
             </p>
             <p className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-[16px] font-bold text-white">
               <Clock3 className="h-4 w-4" />
@@ -306,8 +306,8 @@ const ConversionBoosterSection = () => {
             </p>
           </div>
 
-          <h2 className="font-brand text-[30px] font-semibold leading-tight text-white">¿©¸§ Ãâ¹ß Ä«¿îÆ®´Ù¿î ÁøÇà Áß</h2>
-          <p className="text-[16px] text-white/85">»ó´ã ¼ø¼­ ±âÁØÀ¸·Î ÁÂ¼®ÀÌ ¸¶°¨µË´Ï´Ù. ÀüÈ­·Î Áï½Ã °¡´É ÁÂ¼®À» È®ÀÎÇÏ¼¼¿ä.</p>
+          <h2 className="font-brand text-[30px] font-semibold leading-tight text-white">ì—¬ë¦„ ì¶œë°œ ì¹´ìš´íŠ¸ë‹¤ìš´ ì§„í–‰ ì¤‘</h2>
+          <p className="text-[16px] text-white/85">ìƒë‹´ ìˆœì„œ ê¸°ì¤€ìœ¼ë¡œ ì¢Œì„ì´ ë§ˆê°ë©ë‹ˆë‹¤. ì „í™”ë¡œ ì¦‰ì‹œ ê°€ëŠ¥ ì¢Œì„ì„ í™•ì¸í•˜ì„¸ìš”.</p>
 
           <div className="h-2 overflow-hidden rounded-full bg-white/25">
             <span
@@ -315,7 +315,7 @@ const ConversionBoosterSection = () => {
               style={{ width: `${recruitmentProgress}%` }}
             />
           </div>
-          <p className="text-[16px] text-white/80">¸ðÁý ÁøÇà·ü {recruitmentProgress}% ¡¤ ´ÊÀ»¼ö·Ï Ç×°ø ¼±ÅÃ ÆøÀÌ ÁÙ¾îµì´Ï´Ù.</p>
+          <p className="text-[16px] text-white/80">ëª¨ì§‘ ì§„í–‰ë¥  {recruitmentProgress}% Â· ëŠ¦ì„ìˆ˜ë¡ í•­ê³µ ì„ íƒ í­ì´ ì¤„ì–´ë“­ë‹ˆë‹¤.</p>
 
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <button
@@ -324,13 +324,13 @@ const ConversionBoosterSection = () => {
               className="cta-pulse inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
             >
               <PhoneCall className="h-5 w-5" />
-              ¿©¸§ ÁÂ¼® ¹Ù·Î È®ÀÎ
+              ì—¬ë¦„ ì¢Œì„ ë°”ë¡œ í™•ì¸
             </button>
             <a
               href={`tel:${contacts[1].tel}`}
               className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-white/35 px-4 text-[16px] font-semibold text-white"
             >
-              ÀÏÁ¤ ´ã´ç ºü¸¥ ¿¬°á
+              ì¼ì • ë‹´ë‹¹ ë¹ ë¥¸ ì—°ê²°
             </a>
           </div>
         </div>
@@ -338,8 +338,8 @@ const ConversionBoosterSection = () => {
 
       <section className="mx-auto mt-10 w-full max-w-5xl px-4">
         <div className="mb-4 flex items-end justify-between gap-4">
-          <h2 className="font-brand text-[30px] font-semibold leading-tight">º½ ¡¤ °¡À» ¡¤ °Ü¿ï ¿ÀÇÂ ¾Ë¸²</h2>
-          <p className="text-[16px] text-muted-foreground">½ÃÁðº°·Î ¸ðµÎ ¼±ÅÃÇÒ ¼ö ÀÖ½À´Ï´Ù.</p>
+          <h2 className="font-brand text-[30px] font-semibold leading-tight">ë´„ Â· ê°€ì„ Â· ê²¨ìš¸ ì˜¤í”ˆ ì•Œë¦¼</h2>
+          <p className="text-[16px] text-muted-foreground">ì‹œì¦Œë³„ë¡œ ëª¨ë‘ ì„ íƒí•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤.</p>
         </div>
 
         <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 scrollbar-hide md:grid md:grid-cols-3 md:overflow-visible">
@@ -367,7 +367,7 @@ const ConversionBoosterSection = () => {
                       >
                         <img
                           src={image}
-                          alt={`${season.title} ¹Ì¸®º¸±â ${index + 1}`}
+                          alt={`${season.title} ë¯¸ë¦¬ë³´ê¸° ${index + 1}`}
                           loading="lazy"
                           className="h-16 w-full object-cover"
                         />
@@ -380,7 +380,7 @@ const ConversionBoosterSection = () => {
                     onClick={() => openPreview(season.key, 0)}
                     className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-primary/25 px-4 text-[16px] font-semibold text-primary"
                   >
-                    ¹Ì¸®º¸±â Å©°Ô º¸±â
+                    ë¯¸ë¦¬ë³´ê¸° í¬ê²Œ ë³´ê¸°
                   </button>
 
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -395,7 +395,7 @@ const ConversionBoosterSection = () => {
                       }`}
                     >
                       {liked ? <CheckCircle2 className="h-5 w-5" /> : <Heart className="h-5 w-5" />}
-                      {liked ? "ÁÁ¾Æ¿ä ¿Ï·á" : "ÁÁ¾Æ¿ä"}
+                      {liked ? "ì¢‹ì•„ìš” ì™„ë£Œ" : "ì¢‹ì•„ìš”"}
                     </button>
 
                     <button
@@ -404,7 +404,7 @@ const ConversionBoosterSection = () => {
                       className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-primary px-4 text-[16px] font-semibold text-white"
                     >
                       <CalendarDays className="h-5 w-5" />
-                      ´ë±â ½ÅÃ»
+                      ëŒ€ê¸° ì‹ ì²­
                     </button>
                   </div>
                 </div>
@@ -436,7 +436,7 @@ const ConversionBoosterSection = () => {
                 type="button"
                 onClick={closePreview}
                 className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-black/35 text-white"
-                aria-label="¹Ì¸®º¸±â ´Ý±â"
+                aria-label="ë¯¸ë¦¬ë³´ê¸° ë‹«ê¸°"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -445,7 +445,7 @@ const ConversionBoosterSection = () => {
             <div className="relative">
               <img
                 src={activePreviewSeason.previewImages[previewIndex]}
-                alt={`${activePreviewSeason.title} ÀÌ¹ÌÁö ${previewIndex + 1}`}
+                alt={`${activePreviewSeason.title} ì´ë¯¸ì§€ ${previewIndex + 1}`}
                 className="max-h-[66svh] w-full object-cover"
               />
 
@@ -455,7 +455,7 @@ const ConversionBoosterSection = () => {
                   setPreviewIndex((prev) => (prev === 0 ? activePreviewSeason.previewImages.length - 1 : prev - 1))
                 }
                 className="absolute left-3 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/45 bg-black/45 text-white"
-                aria-label="ÀÌÀü ÀÌ¹ÌÁö"
+                aria-label="ì´ì „ ì´ë¯¸ì§€"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
@@ -463,7 +463,7 @@ const ConversionBoosterSection = () => {
                 type="button"
                 onClick={() => setPreviewIndex((prev) => (prev + 1) % activePreviewSeason.previewImages.length)}
                 className="absolute right-3 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/45 bg-black/45 text-white"
-                aria-label="´ÙÀ½ ÀÌ¹ÌÁö"
+                aria-label="ë‹¤ìŒ ì´ë¯¸ì§€"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>
@@ -479,7 +479,7 @@ const ConversionBoosterSection = () => {
                     previewIndex === index ? "border-accent" : "border-white/35"
                   }`}
                 >
-                  <img src={image} alt={`${activePreviewSeason.title} ½æ³×ÀÏ ${index + 1}`} className="h-full w-full object-cover" />
+                  <img src={image} alt={`${activePreviewSeason.title} ì¸ë„¤ì¼ ${index + 1}`} className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>
@@ -492,14 +492,14 @@ const ConversionBoosterSection = () => {
           <div className="w-full max-w-xl overflow-hidden rounded-3xl border bg-white shadow-elegant">
             <div className="flex items-start justify-between border-b px-5 py-4">
               <div>
-                <p className="text-[16px] font-semibold text-primary">¿©¸§ ÁÂ¼® »ó´ã ¿¬°á</p>
-                <h3 className="font-brand text-[26px] font-semibold leading-tight">´ã´ç ´ëÇ¥¸¦ ¼±ÅÃÇØ ¹Ù·Î ÅëÈ­ÇÏ¼¼¿ä</h3>
+                <p className="text-[16px] font-semibold text-primary">ì—¬ë¦„ ì¢Œì„ ìƒë‹´ ì—°ê²°</p>
+                <h3 className="font-brand text-[26px] font-semibold leading-tight">ë‹´ë‹¹ ëŒ€í‘œë¥¼ ì„ íƒí•´ ë°”ë¡œ í†µí™”í•˜ì„¸ìš”</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowSeatCallSheet(false)}
                 className="inline-flex h-11 w-11 items-center justify-center rounded-full border"
-                aria-label="ÁÂ¼® »ó´ã ¼±ÅÃ ´Ý±â"
+                aria-label="ì¢Œì„ ìƒë‹´ ì„ íƒ ë‹«ê¸°"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -526,7 +526,7 @@ const ConversionBoosterSection = () => {
           <div className="w-full max-w-xl overflow-hidden rounded-3xl border bg-white shadow-elegant">
             <div className="flex items-start justify-between border-b px-5 py-4">
               <div>
-                <p className="text-[16px] font-semibold text-primary">½ÃÁð ¿ÀÇÂ ¿ì¼± ¾È³»</p>
+                <p className="text-[16px] font-semibold text-primary">ì‹œì¦Œ ì˜¤í”ˆ ìš°ì„  ì•ˆë‚´</p>
                 <h3 className="font-brand text-[26px] font-semibold leading-tight">
                   {seasonLeadOptions.find((option) => option.key === waitlistTarget)?.title}
                 </h3>
@@ -535,27 +535,27 @@ const ConversionBoosterSection = () => {
                 type="button"
                 onClick={closeWaitlistModal}
                 className="inline-flex h-11 w-11 items-center justify-center rounded-full border"
-                aria-label="´ë±â ½ÅÃ» ´Ý±â"
+                aria-label="ëŒ€ê¸° ì‹ ì²­ ë‹«ê¸°"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             <div className="space-y-3 px-5 py-4">
-              <p className="text-[16px] text-foreground/80">½ÃÁðº°·Î 1È¸ µî·ÏµÇ¸ç, ¿ÀÇÂ ½Ã ¿ì¼± ¿¬¶ôµå¸³´Ï´Ù.</p>
+              <p className="text-[16px] text-foreground/80">ì‹œì¦Œë³„ë¡œ 1íšŒ ë“±ë¡ë˜ë©°, ì˜¤í”ˆ ì‹œ ìš°ì„  ì—°ë½ë“œë¦½ë‹ˆë‹¤.</p>
 
               <form onSubmit={submitWaitlist} className="space-y-2">
                 <input
                   value={waitlistName}
                   onChange={(event) => setWaitlistName(event.target.value)}
-                  placeholder="ÀÌ¸§"
+                  placeholder="ì´ë¦„"
                   className="w-full rounded-xl border px-4 py-3 text-[16px]"
                 />
                 <input
                   value={waitlistPhone}
                   onChange={(event) => setWaitlistPhone(event.target.value)}
                   inputMode="tel"
-                  placeholder="ÈÞ´ëÆù ¹øÈ£ (¼ýÀÚ¸¸)"
+                  placeholder="íœ´ëŒ€í° ë²ˆí˜¸ (ìˆ«ìžë§Œ)"
                   className="w-full rounded-xl border px-4 py-3 text-[16px]"
                 />
 
@@ -563,7 +563,7 @@ const ConversionBoosterSection = () => {
                   type="submit"
                   className="inline-flex min-h-[50px] w-full items-center justify-center rounded-xl bg-primary px-4 text-[16px] font-semibold text-white"
                 >
-                  ´ë±â µî·ÏÇÏ±â
+                  ëŒ€ê¸° ë“±ë¡í•˜ê¸°
                 </button>
               </form>
 
@@ -583,7 +583,7 @@ const ConversionBoosterSection = () => {
                   className="inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
                 >
                   <PhoneCall className="h-5 w-5" />
-                  ´ã´çÀÚ¿Í ¹Ù·Î ÅëÈ­
+                  ë‹´ë‹¹ìžì™€ ë°”ë¡œ í†µí™”
                 </a>
               ) : null}
             </div>
@@ -595,4 +595,5 @@ const ConversionBoosterSection = () => {
 };
 
 export default ConversionBoosterSection;
+
 
