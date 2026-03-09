@@ -38,14 +38,14 @@ export interface DayPlan {
 
 export const contacts: ContactProfile[] = [
   {
-    role: "대표 상담",
-    name: "엄태인 실장",
+    role: "엄태인 대표",
+    name: "엄태인 대표",
     phone: "010-3309-0800",
     tel: "01033090800",
   },
   {
-    role: "일정 상담",
-    name: "정수미 담당",
+    role: "정수미 대표",
+    name: "정수미 대표",
     phone: "010-6424-7774",
     tel: "01064247774",
   },
@@ -306,5 +306,194 @@ export const faqItems = [
     question: "준비물은 어떻게 챙기면 될까요?",
     answer:
       "방풍 겉옷, 편한 워킹화, 선글라스, 개인 상비약 기준으로 준비하면 충분하며 상세 리스트는 상담 시 전달합니다.",
+  },
+];
+
+export interface BrandPalette {
+  name: string;
+  hex: string;
+  usage: string;
+}
+
+export interface BrandCi {
+  signature: string;
+  slogan: string;
+  mission: string;
+  toneKeywords: string[];
+  palette: BrandPalette[];
+}
+
+export interface PhotoGalleryItem {
+  id: string;
+  image: string;
+  title: string;
+  tag: "빙하" | "절경" | "도시어부" | "이동" | "호수";
+  day: string;
+  spot: string;
+}
+
+export interface TasteMatch {
+  key: "panorama" | "relaxed" | "fishing";
+  label: string;
+  summary: string;
+  day: string;
+  route: string;
+  image: string;
+}
+
+export const brandCi: BrandCi = {
+  signature: "ALASKATRIP",
+  slogan: "느리게, 깊게, 확실하게.",
+  mission: "큰 풍경 앞에서 숨 고를 시간을 보장하는 프리미엄 소그룹 여정",
+  toneKeywords: ["사진 우선", "과장 없는 고급감", "안심 동선", "전화 전환 중심"],
+  palette: [
+    { name: "Glacier Navy", hex: "#112A46", usage: "신뢰, 상담 CTA" },
+    { name: "Aurora Gold", hex: "#CFA144", usage: "강조 버튼, 예약 유도" },
+    { name: "Ice Mist", hex: "#E8EEF5", usage: "배경, 정보 카드" },
+    { name: "Midnight Ink", hex: "#0B1420", usage: "텍스트, 오버레이" },
+  ],
+};
+
+export const photoGallery: PhotoGalleryItem[] = [
+  { id: "g1", image: "/alaska-mobile/day4-1.webp", title: "빙하가 눈앞으로 다가오는 순간", tag: "빙하", day: "DAY 4", spot: "콜롬비아 빙하" },
+  { id: "g2", image: "/alaska-mobile/day4-2.webp", title: "선상에서 마주한 거대한 얼음 절벽", tag: "빙하", day: "DAY 4", spot: "프린스 윌리엄 사운드" },
+  { id: "g3", image: "/alaska-mobile/day3-1.webp", title: "헤쳐패스 대평원의 스케일", tag: "절경", day: "DAY 3", spot: "헤쳐패스" },
+  { id: "g4", image: "/alaska-mobile/day3-3.webp", title: "협곡을 가르며 이어지는 도로", tag: "절경", day: "DAY 3", spot: "키스톤 캐년" },
+  { id: "g5", image: "/alaska-mobile/day2-1.webp", title: "디날리 경비행기 하늘 뷰", tag: "절경", day: "DAY 2", spot: "디날리" },
+  { id: "g6", image: "/alaska-mobile/day2-2.webp", title: "이동 중에도 계속 이어지는 풍경", tag: "이동", day: "DAY 2", spot: "타키나 구간" },
+  { id: "g7", image: "/alaska-mobile/day6-1.webp", title: "알래스카 레일로드 감성", tag: "이동", day: "DAY 6", spot: "스워드 라인" },
+  { id: "g8", image: "/alaska-mobile/day6-3.webp", title: "기차 창밖 파노라마", tag: "이동", day: "DAY 6", spot: "스워드" },
+  { id: "g9", image: "/alaska-mobile/day7-1.webp", title: "도시어부 촬영지의 바다 색감", tag: "도시어부", day: "DAY 7", spot: "호머" },
+  { id: "g10", image: "/alaska-mobile/day7-2.webp", title: "헐리벗 포인트 출항", tag: "도시어부", day: "DAY 7", spot: "호머 스핏" },
+  { id: "g11", image: "/alaska-mobile/day7-3.webp", title: "항구 산책과 자유시간", tag: "도시어부", day: "DAY 7", spot: "호머 항구" },
+  { id: "g12", image: "/alaska-mobile/day5-2.webp", title: "빙하 조망 드라이브 코스", tag: "절경", day: "DAY 5", spot: "마타누스카" },
+  { id: "g13", image: "/alaska-mobile/day5-3.webp", title: "산맥과 하늘의 레이어", tag: "절경", day: "DAY 5", spot: "랭겔 권역" },
+  { id: "g14", image: "/alaska-mobile/day8-1.webp", title: "강변 산책의 느린 템포", tag: "호수", day: "DAY 8", spot: "키나이강" },
+  { id: "g15", image: "/alaska-mobile/day8-2.webp", title: "마지막 체류일의 여유", tag: "호수", day: "DAY 8", spot: "솔도트나" },
+  { id: "g16", image: "/alaska-mobile/day1-1.webp", title: "앵커리지 첫 도착 뷰", tag: "절경", day: "DAY 1", spot: "앵커리지" },
+  { id: "g17", image: "/alaska-mobile/hero-2.webp", title: "여름 알래스카 대표 장면", tag: "빙하", day: "HERO", spot: "알래스카" },
+  { id: "g18", image: "/alaska-mobile/story-3.webp", title: "호머 항구의 저녁 색감", tag: "도시어부", day: "DAY 7", spot: "호머" },
+];
+
+export const tasteMatches: TasteMatch[] = [
+  {
+    key: "panorama",
+    label: "절경 중심",
+    summary: "빙하와 협곡을 크게 보고 싶다면 DAY 3~4가 핵심입니다.",
+    day: "DAY 4",
+    route: "발디즈 · 콜롬비아 빙하",
+    image: "/alaska-mobile/day4-3.webp",
+  },
+  {
+    key: "relaxed",
+    label: "여유 중심",
+    summary: "이동 템포를 무리하지 않게 가져가는 DAY 6~8 구간이 맞습니다.",
+    day: "DAY 8",
+    route: "솔도트나 · 키나이강",
+    image: "/alaska-mobile/day8-1.webp",
+  },
+  {
+    key: "fishing",
+    label: "도시어부 중심",
+    summary: "호머 촬영 포인트와 광어 낚시를 원하면 DAY 7이 핵심입니다.",
+    day: "DAY 7",
+    route: "호머 · 스핏",
+    image: "/alaska-mobile/day7-2.webp",
+  },
+];
+
+export interface WowPoint {
+  badge: string;
+  title: string;
+  description: string;
+  image: string;
+}
+
+export const wowPoints: WowPoint[] = [
+  {
+    badge: "WOW 01",
+    title: "콜롬비아 빙하 7시간 선상 체험",
+    description: "사진으로만 보던 스케일을 눈앞에서 여유 있게 체감하는 핵심 하이라이트입니다.",
+    image: "/alaska-mobile/day4-2.webp",
+  },
+  {
+    badge: "WOW 02",
+    title: "도시어부 촬영지 호머 포인트",
+    description: "항구 감성과 광어 포인트를 동시에 즐기는 알래스카 대표 장면을 만납니다.",
+    image: "/alaska-mobile/day7-2.webp",
+  },
+  {
+    badge: "WOW 03",
+    title: "이동 자체가 절경인 파노라마 루트",
+    description: "헤쳐패스부터 키나이강까지, 차창 밖 풍경이 끊기지 않는 동선으로 구성했습니다.",
+    image: "/alaska-mobile/day3-3.webp",
+  },
+];
+
+export interface SeasonalWaitlistOption {
+  key: "fall" | "winter";
+  title: string;
+  subtitle: string;
+  image: string;
+  openPlan: string;
+  benchmarkNote: string;
+}
+
+export interface DesignEvidence {
+  title: string;
+  benchmark: string;
+  reason: string;
+  appliedPattern: string;
+}
+
+export const summerCampaignClock = {
+  departureAt: "2026-07-15T09:00:00+09:00",
+  recruitmentOpenAt: "2026-03-09T09:00:00+09:00",
+  capacity: 12,
+};
+
+export const seasonalWaitlistOptions: SeasonalWaitlistOption[] = [
+  {
+    key: "fall",
+    title: "가을 시즌 우선 오픈 알림",
+    subtitle: "단풍 + 파노라마 드라이브 중심 코스",
+    image: "/alaska-mobile/season-fall.webp",
+    openPlan: "2026년 가을 코스 오픈 예정",
+    benchmarkNote: "네이버 예약형 간단 신청 패턴처럼 1회 등록 후 재안내",
+  },
+  {
+    key: "winter",
+    title: "겨울 시즌 우선 오픈 알림",
+    subtitle: "오로라 + 설경 중심 프리미엄 코스",
+    image: "/alaska-mobile/season-winter.webp",
+    openPlan: "2026년 겨울 코스 오픈 예정",
+    benchmarkNote: "카카오T 사전호출처럼 먼저 의사 등록 후 오픈 시 즉시 연결",
+  },
+];
+
+export const designEvidence: DesignEvidence[] = [
+  {
+    title: "상단 핵심 CTA 단일 집중",
+    benchmark: "토스 홈/결제 플로우",
+    reason: "50대 모바일 사용자는 선택지가 많을수록 이탈이 늘어나기 때문에 1순위 행동을 크게 제시해야 전환이 올라갑니다.",
+    appliedPattern: "첫 화면에서 전화 상담과 일정 보기만 크게 배치",
+  },
+  {
+    title: "하단 고정 액션 바",
+    benchmark: "카카오T, 쿠팡 고정 구매 바",
+    reason: "스크롤이 길어져도 행동 버튼이 계속 보이면 CTA 도달 비용이 줄어 전환 유지에 유리합니다.",
+    appliedPattern: "대표 2인 전화 버튼을 전 구간 고정 노출",
+  },
+  {
+    title: "숏폼형 몰입 갤러리",
+    benchmark: "YouTube Shorts, Instagram Reels 탐색 구조",
+    reason: "이미지 중심 타깃은 짧은 텍스트보다 연속 장면 소비에서 체류시간과 감정 이입이 크게 증가합니다.",
+    appliedPattern: "이미지 클릭 시 세로 스크롤 풀스크린 피드로 전환",
+  },
+  {
+    title: "희소성 + 시간 압박",
+    benchmark: "국내 상위 커머스 한정수량/타이머 패턴",
+    reason: "정원 12명, 출발 D-Day를 동시에 제시하면 상담 결정이 빨라지고 '나중에' 지연을 줄일 수 있습니다.",
+    appliedPattern: "D-Day 카드 + 12명 정원 문구 + 즉시 전화 CTA",
   },
 ];

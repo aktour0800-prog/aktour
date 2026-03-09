@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss";
+﻿import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
@@ -17,8 +17,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['"Pretendard"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        display: ['"Playfair Display"', 'serif'],
+        sans: ['"Noto Sans KR"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['"Noto Serif KR"', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -64,7 +64,6 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Extended Alaska Luxury Theme
         navy: {
           DEFAULT: "hsl(var(--navy))",
           light: "hsl(var(--navy-light))",

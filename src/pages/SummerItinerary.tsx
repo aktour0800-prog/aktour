@@ -1,4 +1,4 @@
-﻿import { useMemo } from "react";
+﻿import { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { CalendarDays, CheckCircle2, PhoneCall, PlaneTakeoff, ShieldCheck, XCircle } from "lucide-react";
 
@@ -55,6 +55,14 @@ const SummerItinerary = () => {
     [],
   );
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+
+    if (window.location.hash) {
+      const cleanUrl = `${window.location.pathname}${window.location.search}`;
+      window.history.replaceState(null, "", cleanUrl);
+    }
+  }, []);
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SeoHead
@@ -90,14 +98,14 @@ const SummerItinerary = () => {
                   className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[17px] font-bold text-primary"
                 >
                   <PhoneCall className="h-5 w-5" />
-                  대표 상담
+                  {contacts[0].name}
                 </a>
                 <a
                   href={`tel:${contacts[1].tel}`}
                   className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-primary/30 px-4 text-[17px] font-semibold text-primary"
                 >
                   <CalendarDays className="h-5 w-5" />
-                  일정 상담
+                  {contacts[1].name}
                 </a>
               </div>
             </div>
@@ -140,7 +148,7 @@ const SummerItinerary = () => {
           <h2 className="mb-4 text-[28px] font-bold">Day1 ~ Day9 상세 일정</h2>
           <div className="space-y-5">
             {dayPlans.map((day) => (
-              <article key={day.day} className="overflow-hidden rounded-2xl border bg-white shadow-card">
+              <article id={`day-${day.day.replace(/\s+/g, "-").toLowerCase()}`} key={day.day} className="overflow-hidden rounded-2xl border bg-white shadow-card">
                 <img src={day.image} alt={`${day.day} ${day.route}`} className="h-56 w-full object-cover" loading="lazy" />
 
                 <div className="space-y-3 p-5">
