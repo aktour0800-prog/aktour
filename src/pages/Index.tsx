@@ -8,16 +8,17 @@ import FloatingCallButton from "@/components/landing/FloatingCallButton";
 import ConversionBoosterSection from "@/components/landing/ConversionBoosterSection";
 import SeoHead from "@/components/seo/SeoHead";
 import {
-  brandCi,
   contacts,
+  dayPlans,
   faqItems,
-  photoGallery,
   seasonCards,
+  seasonGalleryGroups,
   storyCards,
   summerSummary,
   tasteMatches,
   trustMetrics,
   wowPoints,
+  type GallerySeasonKey,
 } from "@/data/summerCampaignData";
 
 const HERO_REVEAL_MS = 1700;
@@ -25,7 +26,8 @@ const HERO_REVEAL_MS = 1700;
 const Index = () => {
   const [showHeroContent, setShowHeroContent] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
-  const [activeTag, setActiveTag] = useState<string>("전체");
+  const [activeSeason, setActiveSeason] = useState<GallerySeasonKey>("summer");
+  const [activeSummerDay, setActiveSummerDay] = useState<number | "all">("all");
   const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
   const [selectedTasteKey, setSelectedTasteKey] = useState(tasteMatches[0].key);
   const [shortsIndex, setShortsIndex] = useState(0);
@@ -34,15 +36,22 @@ const Index = () => {
 
   const heroImages = ["/alaska-mobile/hero-1.webp", "/alaska-mobile/hero-2.webp", "/alaska-mobile/hero-3.webp"];
 
-  const galleryTags = useMemo(
-    () => ["전체", ...Array.from(new Set(photoGallery.map((photo) => photo.tag)))],
-    [],
+  const activeSeasonGallery = useMemo(
+    () => seasonGalleryGroups.find((group) => group.key === activeSeason) ?? seasonGalleryGroups[0],
+    [activeSeason],
   );
 
-  const filteredGallery = useMemo(
-    () => (activeTag === "전체" ? photoGallery : photoGallery.filter((photo) => photo.tag === activeTag)),
-    [activeTag],
-  );
+  const filteredGallery = useMemo(() => {
+    if (activeSeason !== "summer") {
+      return activeSeasonGallery.photos;
+    }
+
+    if (activeSummerDay === "all") {
+      return activeSeasonGallery.photos;
+    }
+
+    return activeSeasonGallery.photos.filter((photo) => photo.day === activeSummerDay);
+  }, [activeSeason, activeSeasonGallery.photos, activeSummerDay]);
 
   const orderedGalleryForShorts = useMemo(() => {
     if (!selectedPhotoId) {
@@ -63,6 +72,17 @@ const Index = () => {
   const selectedTaste = useMemo(
     () => tasteMatches.find((item) => item.key === selectedTasteKey) ?? tasteMatches[0],
     [selectedTasteKey],
+  );
+
+  const summerDayFilters = useMemo(
+    () => [
+      { label: "전체", value: "all" as const },
+      ...dayPlans.map((plan) => ({
+        label: plan.day.replace(" ", ""),
+        value: Number(plan.day.replace(/\D/g, "")),
+      })),
+    ],
+    [],
   );
 
   useEffect(() => {
@@ -311,39 +331,6 @@ const Index = () => {
         </section>
 
         <section className="mx-auto mt-10 w-full max-w-5xl px-4">
-          <div className="brand-shell overflow-hidden">
-            <div className="grid gap-5 p-5 sm:p-6">
-              <div className="space-y-2">
-                <p className="text-[16px] font-semibold uppercase tracking-[0.18em] text-primary/70">Brand CI</p>
-                <p className="font-brand text-[31px] font-semibold leading-tight text-primary">{brandCi.slogan}</p>
-                <p className="text-[16px] text-foreground/80">{brandCi.mission}</p>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {brandCi.toneKeywords.map((keyword) => (
-                  <span key={keyword} className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-[16px] font-semibold text-primary">
-                    {keyword}
-                  </span>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                {brandCi.palette.map((color) => (
-                  <article key={color.name} className="ci-swatch">
-                    <div className="h-10" style={{ backgroundColor: color.hex }} />
-                    <div className="space-y-0.5 px-3 py-2">
-                      <p className="text-[16px] font-bold text-primary">{color.name}</p>
-                      <p className="text-[16px] font-medium text-foreground/75">{color.hex}</p>
-                      <p className="text-[16px] text-muted-foreground">{color.usage}</p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto mt-10 w-full max-w-5xl px-4">
           <div className="mb-4 flex items-end justify-between gap-4">
             <h2 className="font-brand text-[30px] font-semibold leading-tight">포토 스토리 4컷</h2>
             <p className="text-[16px] text-muted-foreground">좌우로 넘겨보세요</p>
@@ -412,39 +399,63 @@ const Index = () => {
 
         <ConversionBoosterSection />
 
-
         <section id="gallery" className="mx-auto mt-10 w-full max-w-5xl px-4">
           <div className="mb-4 flex items-end justify-between gap-4">
             <div>
-              <h2 className="font-brand text-[30px] font-semibold leading-tight">현장 갤러리</h2>
-              <p className="text-[16px] text-foreground/80">사진을 누르면 풀스크린 숏폼으로 아래로 넘겨 볼 수 있습니다.</p>
+              <h2 className="font-brand text-[30px] font-semibold leading-tight">시즌 갤러리</h2>
+              <p className="text-[16px] text-foreground/80">사진을 누르면 풀스크린으로 아래로 넘겨 연속 감상할 수 있습니다.</p>
             </div>
             <Link to="/summer-itinerary" className="text-[16px] font-semibold text-primary underline-offset-4 hover:underline">
-              Day1~9 전체 보기
+              여름 확정 일정 보기
             </Link>
           </div>
 
           <div className="mb-3 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-            {galleryTags.map((tag) => {
-              const isActive = activeTag === tag;
+            {seasonGalleryGroups.map((season) => {
+              const isActive = activeSeason === season.key;
               return (
                 <button
-                  key={tag}
+                  key={season.key}
                   type="button"
-                  onClick={() => setActiveTag(tag)}
+                  onClick={() => {
+                    setActiveSeason(season.key);
+                    setActiveSummerDay("all");
+                  }}
                   className={`inline-flex min-h-[46px] items-center rounded-full border px-4 text-[16px] font-semibold transition-all ${
                     isActive ? "border-primary bg-primary text-white" : "border-primary/20 bg-white text-primary"
                   }`}
                 >
-                  {tag}
+                  {season.label}
                 </button>
               );
             })}
           </div>
 
+          {activeSeason === "summer" ? (
+            <div className="mb-3 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              {summerDayFilters.map((filter) => {
+                const isActive = activeSummerDay === filter.value;
+                return (
+                  <button
+                    key={`summer-${filter.label}`}
+                    type="button"
+                    onClick={() => setActiveSummerDay(filter.value)}
+                    className={`inline-flex min-h-[44px] items-center rounded-full border px-3 text-[16px] font-semibold transition-all ${
+                      isActive ? "border-accent bg-accent text-primary" : "border-primary/20 bg-white text-primary"
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
+
+          <p className="mb-3 text-[16px] text-muted-foreground">{activeSeasonGallery.description}</p>
+
           <div className="grid grid-cols-2 gap-2">
             {filteredGallery.map((photo, index) => {
-              const isLarge = index % 5 === 0;
+              const isLarge = index % 6 === 0;
               return (
                 <button
                   key={photo.id}
@@ -456,12 +467,12 @@ const Index = () => {
                 >
                   <img
                     src={photo.image}
-                    alt={`${photo.day} ${photo.title}`}
+                    alt={`${photo.dayLabel} ${photo.title}`}
                     loading="lazy"
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent p-3">
-                    <p className="text-[16px] font-semibold text-accent">{photo.day}</p>
+                    <p className="text-[16px] font-semibold text-accent">{photo.dayLabel}</p>
                     <p className="text-[16px] font-semibold leading-tight text-white">{photo.title}</p>
                   </div>
                 </button>
@@ -470,14 +481,34 @@ const Index = () => {
           </div>
 
           <p className="mt-3 text-[16px] text-muted-foreground">
-            현재 {filteredGallery.length}컷 노출 중 · 숏폼 뷰어에서 아래로 넘겨 연속 감상할 수 있습니다.
+            {activeSeasonGallery.label} 시즌 {filteredGallery.length}컷 노출 중 · 끝까지 본 뒤 바로 전화 상담으로 연결할 수 있습니다.
           </p>
+
+          <div className="mt-4 rounded-2xl border bg-white p-4 shadow-card">
+            <p className="text-[16px] text-foreground/80">원하는 장면을 충분히 보셨다면, 지금 가능한 좌석부터 먼저 확인해보세요.</p>
+            <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <a
+                href={`tel:${contacts[0].tel}`}
+                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-primary px-4 text-[16px] font-semibold text-white"
+              >
+                <PhoneCall className="h-4 w-4" />
+                엄태인 대표 연결
+              </a>
+              <a
+                href={`tel:${contacts[1].tel}`}
+                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
+              >
+                <PhoneCall className="h-4 w-4" />
+                정수미 대표 연결
+              </a>
+            </div>
+          </div>
         </section>
 
         <section id="wow-points" className="mx-auto mt-10 w-full max-w-5xl px-4">
           <div className="mb-4 flex items-end justify-between gap-4">
-            <h2 className="font-brand text-[30px] font-semibold leading-tight">WOW 포인트</h2>
-            <p className="text-[16px] text-muted-foreground">끝까지 보면 결심이 쉬워집니다</p>
+            <h2 className="font-brand text-[30px] font-semibold leading-tight">결정을 당기는 하이라이트</h2>
+            <p className="text-[16px] text-muted-foreground">상담 전환이 높은 장면만 추렸습니다</p>
           </div>
 
           <div className="grid gap-3">
@@ -517,6 +548,7 @@ const Index = () => {
             </div>
           </div>
         </section>
+
         <section id="season-status" className="mx-auto mt-10 w-full max-w-5xl px-4">
           <h2 className="mb-4 font-brand text-[30px] font-semibold leading-tight">시즌 공개 상태</h2>
           <div className="grid gap-4">
@@ -623,7 +655,7 @@ const Index = () => {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/35 to-black/78" />
 
                 <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-3xl space-y-3 px-4 pb-[calc(env(safe-area-inset-bottom)+22px)]">
-                  <p className="wow-ribbon">{photo.day} · {photo.spot}</p>
+                  <p className="wow-ribbon">{photo.dayLabel} · {photo.spot}</p>
                   <h3 className="font-brand text-[30px] font-semibold leading-tight text-white">{photo.title}</h3>
                   <p className="text-[16px] text-white/85">실제 보유 이미지 기반 숏폼 장면입니다.</p>
 
@@ -640,7 +672,7 @@ const Index = () => {
                       onClick={() => setSelectedPhotoId(null)}
                       className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
                     >
-                      이 Day 일정 보기
+                      여름 확정 일정 보기
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </div>
@@ -651,7 +683,7 @@ const Index = () => {
                     </p>
                   ) : (
                     <p className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-[16px] font-medium text-white">
-                      마지막 카드에서 상담 CTA가 열립니다
+                      마지막 장면 다음에 상담 CTA가 열립니다
                     </p>
                   )}
                 </div>
@@ -660,8 +692,8 @@ const Index = () => {
 
             <article className="shorts-frame relative flex h-[100svh] snap-start items-end overflow-hidden bg-[radial-gradient(circle_at_20%_20%,#1f3f66,transparent_45%),radial-gradient(circle_at_85%_75%,#cf9f45,transparent_35%),#0b1420]">
               <div className="mx-auto w-full max-w-3xl space-y-4 px-4 pb-[calc(env(safe-area-inset-bottom)+26px)]">
-                <p className="wow-ribbon">LAST WOW</p>
-                <h3 className="font-brand text-[33px] font-semibold leading-tight text-white">끝까지 보셨네요. 이제 전화 한 통이면 충분합니다.</h3>
+                <p className="wow-ribbon">마지막 장면</p>
+                <h3 className="font-brand text-[33px] font-semibold leading-tight text-white">끝까지 보셨습니다. 지금 전화로 자리부터 확인하세요.</h3>
                 <p className="text-[16px] text-white/85">출발 가능 좌석과 항공을 실시간으로 확인해드리겠습니다.</p>
 
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -701,4 +733,3 @@ const Index = () => {
 };
 
 export default Index;
-

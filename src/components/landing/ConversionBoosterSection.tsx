@@ -3,12 +3,11 @@ import { CalendarDays, CheckCircle2, Clock3, Flame, Heart, PhoneCall, X } from "
 
 import {
   contacts,
-  designEvidence,
-  seasonalWaitlistOptions,
+  seasonLeadOptions,
   summerCampaignClock,
 } from "@/data/summerCampaignData";
 
-type WaitlistSeasonKey = "fall" | "winter";
+type WaitlistSeasonKey = "spring" | "fall" | "winter";
 
 interface WaitlistEntry {
   season: WaitlistSeasonKey;
@@ -18,14 +17,18 @@ interface WaitlistEntry {
 }
 
 interface WaitlistState {
-  likedSeason: WaitlistSeasonKey | null;
+  liked: Record<WaitlistSeasonKey, boolean>;
   entries: WaitlistEntry[];
 }
 
-const WAITLIST_STORAGE_KEY = "alaska_waitlist_v1";
+const WAITLIST_STORAGE_KEY = "alaska_waitlist_v2";
 
 const createDefaultWaitlistState = (): WaitlistState => ({
-  likedSeason: null,
+  liked: {
+    spring: false,
+    fall: false,
+    winter: false,
+  },
   entries: [],
 });
 
@@ -34,40 +37,42 @@ const loadWaitlistState = (): WaitlistState => {
     return createDefaultWaitlistState();
   }
 
+  const defaultState = createDefaultWaitlistState();
+
   try {
-    const raw = window.localStorage.getItem(WAITLIST_STORAGE_KEY);
+    const raw = window.localStorage.getItem(WAITLIST_STORAGE_KEY) ?? window.localStorage.getItem("alaska_waitlist_v1");
     if (!raw) {
-      return createDefaultWaitlistState();
+      return defaultState;
     }
 
     const parsed = JSON.parse(raw) as {
-      likedSeason?: WaitlistSeasonKey;
       liked?: Partial<Record<WaitlistSeasonKey, boolean>>;
+      likedSeason?: WaitlistSeasonKey;
       entries?: WaitlistEntry[];
     };
 
-    const likedSeason: WaitlistSeasonKey | null =
-      parsed.likedSeason === "fall" || parsed.likedSeason === "winter"
-        ? parsed.likedSeason
-        : parsed.liked?.fall
-          ? "fall"
-          : parsed.liked?.winter
-            ? "winter"
-            : null;
+    if (parsed.likedSeason && (parsed.likedSeason === "spring" || parsed.likedSeason === "fall" || parsed.likedSeason === "winter")) {
+      defaultState.liked[parsed.likedSeason] = true;
+    }
 
-    return {
-      likedSeason,
-      entries: Array.isArray(parsed.entries)
-        ? parsed.entries.filter(
-            (entry): entry is WaitlistEntry =>
-              Boolean(entry) &&
-              (entry.season === "fall" || entry.season === "winter") &&
-              typeof entry.phone === "string",
-          )
-        : [],
-    };
+    if (parsed.liked) {
+      defaultState.liked.spring = Boolean(parsed.liked.spring);
+      defaultState.liked.fall = Boolean(parsed.liked.fall);
+      defaultState.liked.winter = Boolean(parsed.liked.winter);
+    }
+
+    defaultState.entries = Array.isArray(parsed.entries)
+      ? parsed.entries.filter(
+          (entry): entry is WaitlistEntry =>
+            Boolean(entry) &&
+            (entry.season === "spring" || entry.season === "fall" || entry.season === "winter") &&
+            typeof entry.phone === "string",
+        )
+      : [];
+
+    return defaultState;
   } catch {
-    return createDefaultWaitlistState();
+    return defaultState;
   }
 };
 
@@ -102,11 +107,6 @@ const ConversionBoosterSection = () => {
     return Math.round((elapsed / total) * 100);
   }, [departureAt, recruitmentOpenAt, now]);
 
-  const selectedLikeSeason = useMemo(
-    () => seasonalWaitlistOptions.find((item) => item.key === waitlistState.likedSeason) ?? null,
-    [waitlistState.likedSeason],
-  );
-
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 60_000);
     return () => window.clearInterval(timer);
@@ -122,13 +122,16 @@ const ConversionBoosterSection = () => {
 
   const handleWaitlistLike = (season: WaitlistSeasonKey) => {
     setWaitlistState((prev) => {
-      if (prev.likedSeason) {
+      if (prev.liked[season]) {
         return prev;
       }
 
       return {
         ...prev,
-        likedSeason: season,
+        liked: {
+          ...prev.liked,
+          [season]: true,
+        },
       };
     });
   };
@@ -165,12 +168,14 @@ const ConversionBoosterSection = () => {
       return;
     }
 
-    const existing = waitlistState.entries.find((entry) => entry.phone === phone);
-    if (existing) {
-      const existingSeason = seasonalWaitlistOptions.find((option) => option.key === existing.season);
+    const existingSeasonEntry = waitlistState.entries.find(
+      (entry) => entry.phone === phone && entry.season === waitlistTarget,
+    );
+
+    if (existingSeasonEntry) {
       setWaitlistFeedback({
         type: "error",
-        message: `이 번호는 이미 ${existingSeason?.title ?? existing.season}으로 등록되었습니다.`,
+        message: "이 번호는 이미 해당 시즌에 등록되어 있습니다.",
       });
       return;
     }
@@ -183,11 +188,14 @@ const ConversionBoosterSection = () => {
     };
 
     setWaitlistState((prev) => ({
-      likedSeason: prev.likedSeason ?? waitlistTarget,
+      liked: {
+        ...prev.liked,
+        [waitlistTarget]: true,
+      },
       entries: [...prev.entries, nextEntry],
     }));
 
-    setWaitlistFeedback({ type: "success", message: "대기 등록이 완료되었습니다. 오픈 시 우선 안내해드립니다." });
+    setWaitlistFeedback({ type: "success", message: "대기 등록 완료. 시즌 오픈 즉시 우선 연락드리겠습니다." });
   };
 
   return (
@@ -206,7 +214,7 @@ const ConversionBoosterSection = () => {
           </div>
 
           <h2 className="font-brand text-[30px] font-semibold leading-tight text-white">여름 출발 카운트다운 진행 중</h2>
-          <p className="text-[16px] text-white/85">모집 한도 12명으로 운영하며, 상담 순서 기준으로 마감됩니다.</p>
+          <p className="text-[16px] text-white/85">상담 순서 기준으로 좌석이 마감됩니다. 전화로 즉시 가능 좌석을 확인하세요.</p>
 
           <div className="h-2 overflow-hidden rounded-full bg-white/25">
             <span
@@ -214,7 +222,7 @@ const ConversionBoosterSection = () => {
               style={{ width: `${recruitmentProgress}%` }}
             />
           </div>
-          <p className="text-[16px] text-white/80">모집 기간 진행률 {recruitmentProgress}% · 늦을수록 항공 선택폭이 줄어듭니다.</p>
+          <p className="text-[16px] text-white/80">모집 진행률 {recruitmentProgress}% · 늦을수록 항공 선택 폭이 줄어듭니다.</p>
 
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <a
@@ -222,7 +230,7 @@ const ConversionBoosterSection = () => {
               className="cta-pulse inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
             >
               <PhoneCall className="h-5 w-5" />
-              좌석 가능 여부 지금 확인
+              여름 좌석 바로 확인
             </a>
             <a
               href={`tel:${contacts[1].tel}`}
@@ -236,38 +244,13 @@ const ConversionBoosterSection = () => {
 
       <section className="mx-auto mt-10 w-full max-w-5xl px-4">
         <div className="mb-4 flex items-end justify-between gap-4">
-          <h2 className="font-brand text-[30px] font-semibold leading-tight">설계 근거</h2>
-          <p className="text-[16px] text-muted-foreground">국내 사용성이 검증된 패턴 기반</p>
+          <h2 className="font-brand text-[30px] font-semibold leading-tight">봄 · 가을 · 겨울 오픈 알림</h2>
+          <p className="text-[16px] text-muted-foreground">시즌별로 모두 선택할 수 있습니다.</p>
         </div>
-
-        <div className="grid gap-3">
-          {designEvidence.map((item) => (
-            <article key={item.title} className="evidence-card">
-              <p className="text-[16px] font-semibold text-primary">벤치마크: {item.benchmark}</p>
-              <h3 className="mt-1 text-[23px] font-semibold leading-tight">{item.title}</h3>
-              <p className="mt-2 text-[16px] text-foreground/80">{item.reason}</p>
-              <p className="mt-2 text-[16px] font-semibold text-primary/85">적용: {item.appliedPattern}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto mt-10 w-full max-w-5xl px-4">
-        <div className="mb-4 flex items-end justify-between gap-4">
-          <h2 className="font-brand text-[30px] font-semibold leading-tight">가을/겨울 대기 리스트</h2>
-          <p className="text-[16px] text-muted-foreground">좋아요는 기기 기준 1회 · 대기 신청은 번호 기준 1회</p>
-        </div>
-
-        {selectedLikeSeason ? (
-          <p className="mb-3 rounded-2xl border border-primary/15 bg-primary/5 px-4 py-3 text-[16px] text-primary">
-            현재 좋아요 선택: <strong>{selectedLikeSeason.title}</strong>
-          </p>
-        ) : null}
 
         <div className="grid gap-4">
-          {seasonalWaitlistOptions.map((season) => {
-            const liked = waitlistState.likedSeason === season.key;
-            const likeLocked = Boolean(waitlistState.likedSeason) && !liked;
+          {seasonLeadOptions.map((season) => {
+            const liked = waitlistState.liked[season.key];
             const localCount = waitlistState.entries.filter((entry) => entry.season === season.key).length;
 
             return (
@@ -277,24 +260,34 @@ const ConversionBoosterSection = () => {
                   <h3 className="text-[24px] font-semibold leading-tight">{season.title}</h3>
                   <p className="text-[16px] text-foreground/80">{season.subtitle}</p>
                   <p className="text-[16px] font-semibold text-primary">{season.openPlan}</p>
-                  <p className="text-[16px] text-muted-foreground">근거: {season.benchmarkNote}</p>
-                  <p className="text-[16px] text-muted-foreground">현재 기기 등록 수: {localCount}</p>
+
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {season.previewImages.map((image, index) => (
+                      <img
+                        key={`${season.key}-${image}`}
+                        src={image}
+                        alt={`${season.title} 미리보기 ${index + 1}`}
+                        loading="lazy"
+                        className="h-16 w-full rounded-lg object-cover"
+                      />
+                    ))}
+                  </div>
+
+                  <p className="text-[16px] text-muted-foreground">이 브라우저 대기 신청 {localCount}건</p>
 
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <button
                       type="button"
                       onClick={() => handleWaitlistLike(season.key)}
-                      disabled={liked || likeLocked}
+                      disabled={liked}
                       className={`inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border px-4 text-[16px] font-semibold ${
                         liked
                           ? "border-primary/20 bg-primary/10 text-primary"
-                          : likeLocked
-                            ? "border-border bg-secondary text-muted-foreground"
-                            : "border-primary/30 bg-white text-primary"
+                          : "border-primary/30 bg-white text-primary"
                       }`}
                     >
                       {liked ? <CheckCircle2 className="h-5 w-5" /> : <Heart className="h-5 w-5" />}
-                      {liked ? "내 선택 완료" : likeLocked ? "다른 시즌 선택 완료" : "좋아요 1회"}
+                      {liked ? "좋아요 완료" : "좋아요"}
                     </button>
 
                     <button
@@ -318,9 +311,9 @@ const ConversionBoosterSection = () => {
           <div className="w-full max-w-xl overflow-hidden rounded-3xl border bg-white shadow-elegant">
             <div className="flex items-start justify-between border-b px-5 py-4">
               <div>
-                <p className="text-[16px] font-semibold text-primary">가을/겨울 우선 오픈 대기</p>
+                <p className="text-[16px] font-semibold text-primary">시즌 오픈 우선 안내</p>
                 <h3 className="font-brand text-[26px] font-semibold leading-tight">
-                  {seasonalWaitlistOptions.find((option) => option.key === waitlistTarget)?.title}
+                  {seasonLeadOptions.find((option) => option.key === waitlistTarget)?.title}
                 </h3>
               </div>
               <button
@@ -334,7 +327,7 @@ const ConversionBoosterSection = () => {
             </div>
 
             <div className="space-y-3 px-5 py-4">
-              <p className="text-[16px] text-foreground/80">전화번호 기준 1회만 등록됩니다. 오픈 시 우선 안내해드립니다.</p>
+              <p className="text-[16px] text-foreground/80">시즌별로 1회 등록되며, 오픈 시 우선 연락드립니다.</p>
 
               <form onSubmit={submitWaitlist} className="space-y-2">
                 <input
@@ -377,7 +370,7 @@ const ConversionBoosterSection = () => {
                   className="inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
                 >
                   <PhoneCall className="h-5 w-5" />
-                  담당자 전화로 바로 연결
+                  담당자와 바로 통화
                 </a>
               ) : null}
             </div>
@@ -389,4 +382,3 @@ const ConversionBoosterSection = () => {
 };
 
 export default ConversionBoosterSection;
-

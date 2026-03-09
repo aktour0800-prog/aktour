@@ -411,19 +411,19 @@ export interface WowPoint {
 
 export const wowPoints: WowPoint[] = [
   {
-    badge: "WOW 01",
+    badge: "핵심 장면 1",
     title: "콜롬비아 빙하 7시간 선상 체험",
     description: "사진으로만 보던 스케일을 눈앞에서 여유 있게 체감하는 핵심 하이라이트입니다.",
     image: "/alaska-mobile/day4-2.webp",
   },
   {
-    badge: "WOW 02",
+    badge: "핵심 장면 2",
     title: "도시어부 촬영지 호머 포인트",
     description: "항구 감성과 광어 포인트를 동시에 즐기는 알래스카 대표 장면을 만납니다.",
     image: "/alaska-mobile/day7-2.webp",
   },
   {
-    badge: "WOW 03",
+    badge: "핵심 장면 3",
     title: "이동 자체가 절경인 파노라마 루트",
     description: "헤쳐패스부터 키나이강까지, 차창 밖 풍경이 끊기지 않는 동선으로 구성했습니다.",
     image: "/alaska-mobile/day3-3.webp",
@@ -495,5 +495,151 @@ export const designEvidence: DesignEvidence[] = [
     benchmark: "국내 상위 커머스 한정수량/타이머 패턴",
     reason: "정원 12명, 출발 D-Day를 동시에 제시하면 상담 결정이 빨라지고 '나중에' 지연을 줄일 수 있습니다.",
     appliedPattern: "D-Day 카드 + 12명 정원 문구 + 즉시 전화 CTA",
+  },
+];
+
+
+export type GallerySeasonKey = "spring" | "summer" | "fall" | "winter";
+
+export interface SeasonLeadOption {
+  key: Exclude<GallerySeasonKey, "summer">;
+  title: string;
+  subtitle: string;
+  image: string;
+  openPlan: string;
+  previewImages: string[];
+}
+
+export interface SeasonGalleryPhoto {
+  id: string;
+  image: string;
+  title: string;
+  dayLabel: string;
+  spot: string;
+  day?: number;
+}
+
+export interface SeasonGalleryGroup {
+  key: GallerySeasonKey;
+  label: string;
+  description: string;
+  photos: SeasonGalleryPhoto[];
+}
+
+const buildSummerSeasonPhotos = (): SeasonGalleryPhoto[] => {
+  const summerSpots: Record<number, string> = {
+    1: "앵커리지",
+    2: "디날리 경비행기",
+    3: "헤쳐패스",
+    4: "콜롬비아 빙하",
+    5: "마타누스카",
+    6: "스워드",
+    7: "호머",
+    8: "솔도트나",
+    9: "귀국 여정",
+  };
+
+  const photos: SeasonGalleryPhoto[] = [];
+
+  for (let day = 1; day <= 9; day += 1) {
+    for (let cut = 1; cut <= 3; cut += 1) {
+      photos.push({
+        id: `summer-day${day}-${cut}`,
+        image: `/alaska-mobile/day${day}-${cut}.webp`,
+        title: `DAY ${day} · ${summerSpots[day]} 장면 ${cut}`,
+        dayLabel: `DAY ${day}`,
+        day,
+        spot: summerSpots[day],
+      });
+    }
+  }
+
+  return photos;
+};
+
+const springSeasonPhotos: SeasonGalleryPhoto[] = [
+  { id: "spring-1", image: "/alaska-mobile/season-spring.webp", title: "봄 시작 풍경", dayLabel: "SPRING", spot: "봄 프리뷰" },
+  { id: "spring-2", image: "/alaska-mobile/hero-1.webp", title: "봄 햇살의 첫 장면", dayLabel: "SPRING", spot: "앵커리지" },
+  { id: "spring-3", image: "/alaska-mobile/day1-1.webp", title: "가벼운 산책 코스", dayLabel: "SPRING", spot: "Flat Top" },
+  { id: "spring-4", image: "/alaska-mobile/day1-3.webp", title: "도착 첫날 도심 풍경", dayLabel: "SPRING", spot: "다운타운" },
+  { id: "spring-5", image: "/alaska-mobile/day2-2.webp", title: "봄 하늘 경비행기 뷰", dayLabel: "SPRING", spot: "디날리" },
+  { id: "spring-6", image: "/alaska-mobile/day6-2.webp", title: "잔잔한 호수 분위기", dayLabel: "SPRING", spot: "스워드" },
+  { id: "spring-7", image: "/alaska-mobile/day8-1.webp", title: "강변 산책의 계절", dayLabel: "SPRING", spot: "키나이강" },
+  { id: "spring-8", image: "/alaska-mobile/day8-2.webp", title: "초록빛 여유 장면", dayLabel: "SPRING", spot: "솔도트나" },
+];
+
+const fallSeasonPhotos: SeasonGalleryPhoto[] = [
+  { id: "fall-1", image: "/alaska-mobile/season-fall.webp", title: "가을 대표 단풍 장면", dayLabel: "FALL", spot: "가을 프리뷰" },
+  { id: "fall-2", image: "/alaska-mobile/story-4.webp", title: "황금빛 파노라마 루트", dayLabel: "FALL", spot: "헤쳐패스" },
+  { id: "fall-3", image: "/alaska-mobile/day3-1.webp", title: "단풍과 산맥 드라이브", dayLabel: "FALL", spot: "발디즈 구간" },
+  { id: "fall-4", image: "/alaska-mobile/day3-3.webp", title: "가을 협곡 풍경", dayLabel: "FALL", spot: "키스톤 캐년" },
+  { id: "fall-5", image: "/alaska-mobile/day5-3.webp", title: "레이어가 깊은 능선 뷰", dayLabel: "FALL", spot: "랭겔 권역" },
+  { id: "fall-6", image: "/alaska-mobile/day8-3.webp", title: "노을빛 고속도로", dayLabel: "FALL", spot: "귀환 루트" },
+  { id: "fall-7", image: "/alaska-mobile/story-3.webp", title: "항구의 가을 공기", dayLabel: "FALL", spot: "호머" },
+  { id: "fall-8", image: "/alaska-mobile/day7-3.webp", title: "항구 산책 컷", dayLabel: "FALL", spot: "호머 스핏" },
+];
+
+const winterSeasonPhotos: SeasonGalleryPhoto[] = [
+  { id: "winter-1", image: "/alaska-mobile/season-winter.webp", title: "겨울 대표 설경", dayLabel: "WINTER", spot: "겨울 프리뷰" },
+  { id: "winter-2", image: "/alaska-mobile/hero-2.webp", title: "빙하와 설산 전경", dayLabel: "WINTER", spot: "빙하 권역" },
+  { id: "winter-3", image: "/alaska-mobile/story-2.webp", title: "겨울 빙하 포인트", dayLabel: "WINTER", spot: "콜롬비아 빙하" },
+  { id: "winter-4", image: "/alaska-mobile/day4-1.webp", title: "빙벽 근접 장면", dayLabel: "WINTER", spot: "선상 투어" },
+  { id: "winter-5", image: "/alaska-mobile/day4-2.webp", title: "유빙을 가르는 항로", dayLabel: "WINTER", spot: "프린스 윌리엄 사운드" },
+  { id: "winter-6", image: "/alaska-mobile/day5-1.webp", title: "차창 밖 설원", dayLabel: "WINTER", spot: "마타누스카" },
+  { id: "winter-7", image: "/alaska-mobile/day5-2.webp", title: "새하얀 빙하 조망", dayLabel: "WINTER", spot: "워딩턴" },
+  { id: "winter-8", image: "/alaska-mobile/day9-2.webp", title: "귀환 비행 설경", dayLabel: "WINTER", spot: "귀국 항공" },
+];
+
+export const seasonLeadOptions: SeasonLeadOption[] = [
+  {
+    key: "spring",
+    title: "봄 시즌 오픈 알림",
+    subtitle: "여유 산책 + 파노라마 중심 코스",
+    image: "/alaska-mobile/season-spring.webp",
+    openPlan: "2026년 봄 코스 오픈 예정",
+    previewImages: springSeasonPhotos.slice(0, 4).map((photo) => photo.image),
+  },
+  {
+    key: "fall",
+    title: "가을 시즌 오픈 알림",
+    subtitle: "단풍 + 파노라마 드라이브 중심 코스",
+    image: "/alaska-mobile/season-fall.webp",
+    openPlan: "2026년 가을 코스 오픈 예정",
+    previewImages: fallSeasonPhotos.slice(0, 4).map((photo) => photo.image),
+  },
+  {
+    key: "winter",
+    title: "겨울 시즌 오픈 알림",
+    subtitle: "오로라 + 설경 중심 프리미엄 코스",
+    image: "/alaska-mobile/season-winter.webp",
+    openPlan: "2026년 겨울 코스 오픈 예정",
+    previewImages: winterSeasonPhotos.slice(0, 4).map((photo) => photo.image),
+  },
+];
+
+export const seasonGalleryGroups: SeasonGalleryGroup[] = [
+  {
+    key: "summer",
+    label: "여름",
+    description: "DAY 1부터 DAY 9까지 순서대로 이어보세요.",
+    photos: buildSummerSeasonPhotos(),
+  },
+  {
+    key: "spring",
+    label: "봄",
+    description: "봄 시즌 미리보기 장면을 연속으로 확인하세요.",
+    photos: springSeasonPhotos,
+  },
+  {
+    key: "fall",
+    label: "가을",
+    description: "가을 단풍 코스 분위기를 먼저 느껴보세요.",
+    photos: fallSeasonPhotos,
+  },
+  {
+    key: "winter",
+    label: "겨울",
+    description: "겨울 설경/빙하 중심 코스를 미리 체험하세요.",
+    photos: winterSeasonPhotos,
   },
 ];
