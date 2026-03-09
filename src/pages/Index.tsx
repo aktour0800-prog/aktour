@@ -1,6 +1,15 @@
-﻿import { useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowDown, ArrowLeftRight, ArrowRight, CalendarDays, PhoneCall, Sparkles, X } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowLeftRight,
+  ArrowRight,
+  CalendarDays,
+  MessageSquareText,
+  PhoneCall,
+  Sparkles,
+  X,
+} from "lucide-react";
 
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
@@ -33,6 +42,8 @@ interface ShortsDayGroup {
   photos: SeasonGalleryPhoto[];
 }
 
+type InquiryFeedback = { type: "idle" | "error" | "success"; message: string };
+
 const Index = () => {
   const [showHeroContent, setShowHeroContent] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
@@ -44,6 +55,16 @@ const Index = () => {
   const [selectedTasteKey, setSelectedTasteKey] = useState(tasteMatches[0].key);
   const [shortsIndex, setShortsIndex] = useState(0);
   const [shortsHorizontalIndex, setShortsHorizontalIndex] = useState<Record<string, number>>({});
+  const [showHeroCallSheet, setShowHeroCallSheet] = useState(false);
+  const [showInquiryModal, setShowInquiryModal] = useState(false);
+  const [inquiryName, setInquiryName] = useState("");
+  const [inquiryPhone, setInquiryPhone] = useState("");
+  const [inquiryPreferredContact, setInquiryPreferredContact] = useState<"상관없음" | "엄태인 대표" | "정수미 대표">(
+    "상관없음",
+  );
+  const [inquiryMessage, setInquiryMessage] = useState("");
+  const [isSubmittingInquiry, setIsSubmittingInquiry] = useState(false);
+  const [inquiryFeedback, setInquiryFeedback] = useState<InquiryFeedback>({ type: "idle", message: "" });
 
   const shortsFeedRef = useRef<HTMLDivElement | null>(null);
   const shortsRowRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -140,6 +161,77 @@ const Index = () => {
 
   const openImageViewer = (src: string, alt: string) => {
     setSelectedImage({ src, alt });
+  };
+
+  const closeInquiryModal = () => {
+    setShowInquiryModal(false);
+    setInquiryFeedback({ type: "idle", message: "" });
+  };
+
+  const openInquiryModal = () => {
+    setShowHeroCallSheet(false);
+    setShowInquiryModal(true);
+    setInquiryFeedback({ type: "idle", message: "" });
+  };
+
+  const submitInquiry = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const name = inquiryName.trim();
+    const phone = inquiryPhone.replace(/\D/g, "");
+    const message = inquiryMessage.trim();
+
+    if (name.length < 2) {
+      setInquiryFeedback({ type: "error", message: "이름을 2글자 이상 입력해주세요." });
+      return;
+    }
+
+    if (phone.length < 10 || phone.length > 11) {
+      setInquiryFeedback({ type: "error", message: "휴대폰 번호를 정확히 입력해주세요." });
+      return;
+    }
+
+    if (message.length < 5) {
+      setInquiryFeedback({ type: "error", message: "문의 내용을 5자 이상 입력해주세요." });
+      return;
+    }
+
+    setIsSubmittingInquiry(true);
+    setInquiryFeedback({ type: "idle", message: "" });
+
+    try {
+      const response = await fetch("/api/leads/inquiry", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          season: "summer",
+          name,
+          phone,
+          preferredContact: inquiryPreferredContact,
+          message,
+        }),
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { message?: string } | null;
+        throw new Error(payload?.message ?? "문의 저장 중 오류가 발생했습니다.");
+      }
+
+      setInquiryFeedback({ type: "success", message: "문의가 접수되었습니다. 확인 후 빠르게 연락드리겠습니다." });
+      setInquiryName("");
+      setInquiryPhone("");
+      setInquiryMessage("");
+      setInquiryPreferredContact("상관없음");
+    } catch (error) {
+      setInquiryFeedback({
+        type: "error",
+        message: error instanceof Error ? error.message : "문의 저장 중 오류가 발생했습니다.",
+      });
+    } finally {
+      setIsSubmittingInquiry(false);
+    }
   };
 
   useEffect(() => {
@@ -439,13 +531,14 @@ const Index = () => {
               <p className="text-[17px] font-medium text-white/95">2026년 7월 단 1회 확정 · 8박 9일</p>
 
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                <a
-                  href={`tel:${contacts[0].tel}`}
+                <button
+                  type="button"
+                  onClick={() => setShowHeroCallSheet(true)}
                   className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl bg-accent px-4 text-[17px] font-bold text-primary shadow-gold"
                 >
                   <PhoneCall className="h-5 w-5" />
-                  엄태인 대표 상담
-                </a>
+                  상담 전화하기
+                </button>
                 <Link
                   to="/summer-itinerary"
                   className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-white/55 bg-black/20 px-4 text-[17px] font-semibold text-white"
@@ -774,6 +867,128 @@ const Index = () => {
           </div>
         </section>
       </main>
+
+      {showHeroCallSheet ? (
+        <div className="fixed inset-0 z-[76] flex items-end justify-center bg-black/60 px-4 pb-4" role="dialog" aria-modal="true" onClick={() => setShowHeroCallSheet(false)}>
+          <div className="w-full max-w-xl overflow-hidden rounded-3xl border bg-white shadow-elegant" onClick={(event) => event.stopPropagation()}>
+            <div className="flex items-start justify-between border-b px-5 py-4">
+              <div>
+                <p className="text-[16px] font-semibold text-primary">상담 전화하기</p>
+                <h3 className="font-brand text-[26px] font-semibold leading-tight">통화할 대표를 선택해 바로 연결하세요</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowHeroCallSheet(false)}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border"
+                aria-label="상담 전화 선택 닫기"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="grid gap-2 px-5 py-4">
+              {contacts.map((contact) => (
+                <a
+                  key={`hero-call-${contact.tel}`}
+                  href={`tel:${contact.tel}`}
+                  className="inline-flex min-h-[52px] items-center justify-between rounded-xl bg-primary px-4 text-[17px] font-bold text-white"
+                >
+                  <span>{contact.name}</span>
+                  <span>{contact.phone}</span>
+                </a>
+              ))}
+
+              <button
+                type="button"
+                onClick={openInquiryModal}
+                className="inline-flex min-h-[50px] items-center justify-center gap-2 rounded-xl border border-primary/30 bg-white px-4 text-[16px] font-semibold text-primary"
+              >
+                <MessageSquareText className="h-5 w-5" />
+                전화가 안되면 문의 남기기
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {showInquiryModal ? (
+        <div className="fixed inset-0 z-[77] flex items-center justify-center bg-black/65 px-4" role="dialog" aria-modal="true" onClick={closeInquiryModal}>
+          <div className="w-full max-w-xl overflow-hidden rounded-3xl border bg-white shadow-elegant" onClick={(event) => event.stopPropagation()}>
+            <div className="flex items-start justify-between border-b px-5 py-4">
+              <div>
+                <p className="text-[16px] font-semibold text-primary">전화 연결 실패 시</p>
+                <h3 className="font-brand text-[26px] font-semibold leading-tight">문의 남기기</h3>
+              </div>
+              <button
+                type="button"
+                onClick={closeInquiryModal}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border"
+                aria-label="문의 모달 닫기"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3 px-5 py-4">
+              <p className="text-[16px] text-foreground/80">이름/연락처를 남겨주시면 확인 후 빠르게 연락드리겠습니다.</p>
+
+              <form onSubmit={submitInquiry} className="space-y-2">
+                <input
+                  value={inquiryName}
+                  onChange={(event) => setInquiryName(event.target.value)}
+                  placeholder="이름"
+                  className="w-full rounded-xl border px-4 py-3 text-[16px]"
+                />
+                <input
+                  value={inquiryPhone}
+                  onChange={(event) => setInquiryPhone(event.target.value)}
+                  inputMode="tel"
+                  placeholder="휴대폰 번호 (숫자만)"
+                  className="w-full rounded-xl border px-4 py-3 text-[16px]"
+                />
+                <label className="block text-[16px] font-medium text-foreground/80">
+                  희망 담당
+                  <select
+                    value={inquiryPreferredContact}
+                    onChange={(event) =>
+                      setInquiryPreferredContact(event.target.value as "상관없음" | "엄태인 대표" | "정수미 대표")
+                    }
+                    className="mt-1 w-full rounded-xl border px-4 py-3 text-[16px]"
+                  >
+                    <option value="상관없음">상관없음</option>
+                    <option value="엄태인 대표">엄태인 대표</option>
+                    <option value="정수미 대표">정수미 대표</option>
+                  </select>
+                </label>
+                <textarea
+                  value={inquiryMessage}
+                  onChange={(event) => setInquiryMessage(event.target.value)}
+                  placeholder="상담 받고 싶은 내용을 간단히 적어주세요"
+                  className="min-h-[110px] w-full rounded-xl border px-4 py-3 text-[16px]"
+                />
+
+                <button
+                  type="submit"
+                  disabled={isSubmittingInquiry}
+                  className="inline-flex min-h-[50px] w-full items-center justify-center rounded-xl bg-primary px-4 text-[16px] font-semibold text-white disabled:opacity-60"
+                >
+                  {isSubmittingInquiry ? "문의 저장 중..." : "문의 남기기"}
+                </button>
+              </form>
+
+              {inquiryFeedback.type !== "idle" ? (
+                <p
+                  className={`rounded-xl px-3 py-2 text-[16px] ${
+                    inquiryFeedback.type === "error" ? "bg-red-50 text-red-600" : "bg-primary/10 text-primary"
+                  }`}
+                >
+                  {inquiryFeedback.message}
+                </p>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {selectedPhotoId ? (
         <div className="shorts-overlay fixed inset-0 z-[70] bg-black/90" role="dialog" aria-modal="true">

@@ -1,4 +1,4 @@
-import { ensureSchema, getPool } from "../_lib/db.js";
+ï»¿import { ensureSchema, getPool } from "../_lib/db.js";
 import { getClientIp, getUserAgent, json, methodNotAllowed, readJsonBody } from "../_lib/http.js";
 
 const ALLOWED_SEASONS = new Set(["spring", "fall", "winter"]);
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   const season = String(body.season ?? "").toLowerCase();
 
   if (!ALLOWED_SEASONS.has(season)) {
-    json(res, 400, { ok: false, message: "À¯È¿ÇÏÁö ¾ÊÀº ½ÃÁğÀÔ´Ï´Ù." });
+    json(res, 400, { ok: false, message: "ìœ íš¨í•˜ì§€ ì•Šì€ ì‹œì¦Œì…ë‹ˆë‹¤." });
     return;
   }
 
@@ -31,6 +31,6 @@ export default async function handler(req, res) {
     json(res, 201, { ok: true });
   } catch (error) {
     console.error("like insert error", error);
-    json(res, 500, { ok: false, message: "ÁÁ¾Æ¿ä ÀúÀå Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù." });
+    json(res, 500, { ok: false, message: "ì¢‹ì•„ìš” ì €ì¥ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤." });
   }
 }

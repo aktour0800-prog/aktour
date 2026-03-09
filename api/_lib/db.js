@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+﻿import { Pool } from "pg";
 
 let pool;
 let schemaReady = false;
@@ -28,14 +28,81 @@ export const ensureSchema = async () => {
     await client.query(`
       CREATE TABLE IF NOT EXISTS lead_events (
         id BIGSERIAL PRIMARY KEY,
-        event_type TEXT NOT NULL CHECK (event_type IN ('waitlist', 'like')),
-        season TEXT NOT NULL CHECK (season IN ('spring', 'summer', 'fall', 'winter')),
+        event_type TEXT NOT NULL,
+        season TEXT NOT NULL,
         name TEXT,
         phone TEXT,
         ip TEXT,
         user_agent TEXT,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        follow_up_status TEXT NOT NULL DEFAULT 'new',
+        memo TEXT,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
+    `);
+
+    await client.query(`
+      ALTER TABLE lead_events
+      ADD COLUMN IF NOT EXISTS follow_up_status TEXT NOT NULL DEFAULT 'new';
+    `);
+
+    await client.query(`
+      ALTER TABLE lead_events
+      ADD COLUMN IF NOT EXISTS memo TEXT;
+    `);
+
+    await client.query(`
+      ALTER TABLE lead_events
+      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+    `);
+
+    await client.query(`
+      DO $$
+      DECLARE
+        constraint_name TEXT;
+      BEGIN
+        SELECT conname INTO constraint_name
+        FROM pg_constraint
+        WHERE conrelid = 'lead_events'::regclass
+          AND contype = 'c'
+          AND pg_get_constraintdef(oid) ILIKE '%event_type%';
+
+        IF constraint_name IS NOT NULL THEN
+          EXECUTE format('ALTER TABLE lead_events DROP CONSTRAINT %I', constraint_name);
+        END IF;
+      END $$;
+    `);
+
+    await client.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1
+          FROM pg_constraint
+          WHERE conname = 'lead_events_event_type_check'
+            AND conrelid = 'lead_events'::regclass
+        ) THEN
+          ALTER TABLE lead_events
+          ADD CONSTRAINT lead_events_event_type_check
+          CHECK (event_type IN ('waitlist', 'like', 'inquiry'));
+        END IF;
+      END $$;
+    `);
+
+    await client.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1
+          FROM pg_constraint
+          WHERE conname = 'lead_events_season_check'
+            AND conrelid = 'lead_events'::regclass
+        ) THEN
+          ALTER TABLE lead_events
+          ADD CONSTRAINT lead_events_season_check
+          CHECK (season IN ('spring', 'summer', 'fall', 'winter'));
+        END IF;
+      END $$;
     `);
 
     await client.query(`

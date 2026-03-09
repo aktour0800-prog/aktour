@@ -1,4 +1,4 @@
-import { createSessionToken, isAdminPasswordValid, setSessionCookie } from "../_lib/auth.js";
+ï»¿import { createSessionToken, isAdminPasswordValid, setSessionCookie } from "../_lib/auth.js";
 import { json, methodNotAllowed, readJsonBody } from "../_lib/http.js";
 
 export default async function handler(req, res) {
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   if (!isValid) {
-    json(res, 401, { ok: false, message: "ºñ¹Ð¹øÈ£°¡ ¿Ã¹Ù¸£Áö ¾Ê½À´Ï´Ù." });
+    json(res, 401, { ok: false, message: "ë¹„ë°€ë²ˆí˜¸ê°€ ì˜¬ë°”ë¥´ì§€ ì•ŠìŠµë‹ˆë‹¤." });
     return;
   }
 

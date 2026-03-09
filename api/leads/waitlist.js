@@ -1,4 +1,4 @@
-import { ensureSchema, getPool } from "../_lib/db.js";
+ï»¿import { ensureSchema, getPool } from "../_lib/db.js";
 import { getClientIp, getUserAgent, json, methodNotAllowed, readJsonBody } from "../_lib/http.js";
 
 const ALLOWED_SEASONS = new Set(["spring", "fall", "winter"]);
@@ -15,17 +15,17 @@ export default async function handler(req, res) {
   const phone = String(body.phone ?? "").replace(/\D/g, "");
 
   if (!ALLOWED_SEASONS.has(season)) {
-    json(res, 400, { ok: false, message: "À¯È¿ÇÏÁö ¾ÊÀº ½ÃÁğÀÔ´Ï´Ù." });
+    json(res, 400, { ok: false, message: "ìœ íš¨í•˜ì§€ ì•Šì€ ì‹œì¦Œì…ë‹ˆë‹¤." });
     return;
   }
 
   if (name.length < 2) {
-    json(res, 400, { ok: false, message: "ÀÌ¸§À» 2±ÛÀÚ ÀÌ»ó ÀÔ·ÂÇØÁÖ¼¼¿ä." });
+    json(res, 400, { ok: false, message: "ì´ë¦„ì„ 2ê¸€ì ì´ìƒ ì…ë ¥í•´ì£¼ì„¸ìš”." });
     return;
   }
 
   if (phone.length < 10 || phone.length > 11) {
-    json(res, 400, { ok: false, message: "ÈŞ´ëÆù ¹øÈ£¸¦ Á¤È®È÷ ÀÔ·ÂÇØÁÖ¼¼¿ä." });
+    json(res, 400, { ok: false, message: "íœ´ëŒ€í° ë²ˆí˜¸ë¥¼ ì •í™•íˆ ì…ë ¥í•´ì£¼ì„¸ìš”." });
     return;
   }
 
@@ -44,11 +44,11 @@ export default async function handler(req, res) {
     json(res, 201, { ok: true, item: result.rows[0] });
   } catch (error) {
     if (error && typeof error === "object" && "code" in error && error.code === "23505") {
-      json(res, 409, { ok: false, message: "ÀÌ¹Ì µî·ÏµÈ ¹øÈ£ÀÔ´Ï´Ù." });
+      json(res, 409, { ok: false, message: "ì´ë¯¸ ë“±ë¡ëœ ë²ˆí˜¸ì…ë‹ˆë‹¤." });
       return;
     }
 
     console.error("waitlist insert error", error);
-    json(res, 500, { ok: false, message: "¼­¹ö ÀúÀå Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù." });
+    json(res, 500, { ok: false, message: "ëŒ€ê¸° ì‹ ì²­ ì €ì¥ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤." });
   }
 }
