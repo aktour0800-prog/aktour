@@ -1,17 +1,27 @@
-import { Phone } from "lucide-react";
+﻿import { PhoneCall } from "lucide-react";
 
 const FloatingCallButton = () => {
   return (
-    <a
-      href="tel:010-3309-0800"
-      className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-accent text-primary font-bold text-base px-5 py-4 rounded-full shadow-gold hover:scale-105 transition-transform duration-200 safe-bottom"
-      style={{
-        boxShadow: '0 4px 24px -4px hsla(43, 74%, 49%, 0.5)'
-      }}
-    >
-      <Phone className="w-6 h-6" />
-      <span className="hidden sm:inline">전화상담</span>
-    </a>
+    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-white/95 px-3 pb-[calc(env(safe-area-inset-bottom)+12px)] pt-3 backdrop-blur-md">
+      <div className="mx-auto grid max-w-5xl grid-cols-2 gap-2">
+        <a
+          href="tel:01033090800"
+          className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-primary px-3 text-[16px] font-bold text-white"
+          aria-label="엄태인 실장 전화 연결"
+        >
+          <PhoneCall className="h-5 w-5" />
+          대표 010-3309-0800
+        </a>
+        <a
+          href="tel:01064247774"
+          className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-3 text-[16px] font-bold text-primary"
+          aria-label="정수미 담당 전화 연결"
+        >
+          <PhoneCall className="h-5 w-5" />
+          일정 010-6424-7774
+        </a>
+      </div>
+    </div>
   );
 };
 

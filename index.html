@@ -1,137 +1,46 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    
-    <!-- 기본 SEO -->
-    <title>알래스카 여행 전문 | AlaskaTrip - 8박9일 프리미엄 투어</title>
-    <meta name="description" content="알래스카 여행 전문 여행사. 빙하 헬리콥터, 개썰매, 콜롬비아 빙하 유람선. MBC 도시어부 촬영지 코스. 18년 경력, 15명 소그룹 프리미엄 투어." />
-    <meta name="keywords" content="알래스카 여행, 알래스카 투어, 알래스카 8박9일, 도시어부 촬영지, 빙하 헬리콥터, 개썰매, 콜롬비아 빙하, 프리미엄 여행" />
-    <meta name="author" content="(주)아름다운비행" />
+
+    <title>알래스카 프리미엄 8박9일 | AlaskaTrip</title>
+    <meta
+      name="description"
+      content="사진으로 먼저 설레고 일정으로 확신하는 알래스카 프리미엄 소그룹 여행. 2026년 7월 여름 일정 확정."
+    />
     <meta name="robots" content="index, follow" />
+    <meta name="keywords" content="알래스카 여행, 알래스카 8박9일, 알래스카 여름 일정, 프리미엄 소그룹" />
+
     <link rel="canonical" href="https://alaskatrip.co.kr" />
 
-    <!-- Open Graph (카카오톡, 페이스북) -->
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ko_KR" />
     <meta property="og:site_name" content="AlaskaTrip" />
-    <meta property="og:title" content="알래스카 여행 전문 | AlaskaTrip" />
-    <meta property="og:description" content="빙하 헬리콥터, 개썰매, 빙하 유람선. MBC 도시어부 촬영지 8박9일 프리미엄 투어." />
+    <meta property="og:title" content="알래스카 프리미엄 8박9일 | AlaskaTrip" />
+    <meta
+      property="og:description"
+      content="50대 이상 프리미엄 알래스카 여행. 여름 일정 확정, 전화 상담 중심 운영."
+    />
     <meta property="og:url" content="https://alaskatrip.co.kr" />
-    <meta property="og:image" content="https://alaskatrip.co.kr/og-image.jpg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image" content="https://alaskatrip.co.kr/alaska-mobile/hero-1.webp" />
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="알래스카 여행 전문 | AlaskaTrip" />
-    <meta name="twitter:description" content="빙하 헬리콥터, 개썰매, 빙하 유람선. 8박9일 프리미엄 투어." />
-    <meta name="twitter:image" content="https://alaskatrip.co.kr/og-image.jpg" />
+    <meta name="twitter:title" content="알래스카 프리미엄 8박9일 | AlaskaTrip" />
+    <meta name="twitter:description" content="여름 일정 확정 · 50대 맞춤 프리미엄 소그룹" />
+    <meta name="twitter:image" content="https://alaskatrip.co.kr/alaska-mobile/hero-1.webp" />
 
-    <!-- 검색엔진 인증 (등록 후 코드 교체) -->
-    <meta name="naver-site-verification" content="네이버_인증코드" />
-    <meta name="google-site-verification" content="구글_인증코드" />
-
-    <!-- 테마 컬러 -->
     <meta name="theme-color" content="#1e3a5f" />
-    
-    <!-- iOS PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    
-    <!-- 파비콘 (빙하 이미지) -->
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-
-    <!-- 구조화 데이터 (JSON-LD) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "TravelAgency",
-      "name": "AlaskaTrip",
-      "alternateName": "알래스카트립",
-      "url": "https://alaskatrip.co.kr",
-      "logo": "https://alaskatrip.co.kr/logo.png",
-      "description": "알래스카 여행 전문 여행사. 빙하 헬리콥터, 개썰매, 콜롬비아 빙하 유람선. MBC 도시어부 촬영지 코스.",
-      "slogan": "Let's go Alaska!!!",
-      "foundingDate": "2007",
-      "telephone": "+82-10-3309-0800",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "새문안로3길 36, 1225호",
-        "addressLocality": "종로구",
-        "addressRegion": "서울특별시",
-        "addressCountry": "KR"
-      },
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
-        "opens": "09:00",
-        "closes": "18:00"
-      },
-      "parentOrganization": {
-        "@type": "Organization",
-        "name": "(주)아름다운비행",
-        "taxID": "114-86-62823"
-      }
-    }
-    </script>
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "TouristTrip",
-      "name": "알래스카 8박9일 프리미엄 투어",
-      "description": "빙하 헬리콥터, 개썰매, 콜롬비아 빙하 유람선 7시간. MBC 도시어부 촬영지 호머. 디날리산 경비행기.",
-      "touristType": ["Senior travelers", "Adventure seekers"],
-      "provider": {
-        "@type": "TravelAgency",
-        "name": "AlaskaTrip",
-        "telephone": "+82-10-3309-0800"
-      }
-    }
-    </script>
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "알래스카 여행 최적 시기는?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "6월~8월 여름이 최적입니다. 백야 체험, 기온 18-26도로 쾌적합니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "최대 인원은 몇 명인가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "최대 15명 소그룹으로 프라이빗 케어를 제공합니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "도시어부 촬영지 방문하나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "네, MBC 도시어부 알래스카편 촬영지 호머를 7일차에 방문합니다."
-          }
-        }
-      ]
-    }
-    </script>
   </body>
 </html>
+
