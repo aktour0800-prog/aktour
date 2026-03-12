@@ -1,4 +1,4 @@
-﻿export interface ContactProfile {
+export interface ContactProfile {
   role: string;
   name: string;
   phone: string;
@@ -88,7 +88,7 @@ export const storyCards: StoryCard[] = [
   {
     title: "헤쳐패스 파노라마",
     subtitle: "차창 밖이 계속 명장면인 이동 구간",
-    image: "/alaska-mobile/story-4.webp",
+    image: "/alaska-mobile/highlight-panorama-fall.webp",
   },
 ];
 
@@ -333,7 +333,7 @@ export interface PhotoGalleryItem {
 }
 
 export interface TasteMatch {
-  key: "panorama" | "relaxed" | "fishing";
+  key: "panorama" | "relaxed" | "fishing" | "aurora" | "salmon";
   label: string;
   summary: string;
   day: string;
@@ -378,27 +378,43 @@ export const photoGallery: PhotoGalleryItem[] = [
 export const tasteMatches: TasteMatch[] = [
   {
     key: "panorama",
-    label: "절경 중심",
-    summary: "빙하와 협곡을 크게 보고 싶다면 DAY 3~4가 핵심입니다.",
+    label: "\uC808\uACBD \uC911\uC2EC",
+    summary: "\uBE59\uD558\uC640 \uD611\uACE1\uC744 \uD06C\uAC8C \uBCF4\uACE0 \uC2F6\uB2E4\uBA74 DAY 3~4\uAC00 \uD575\uC2EC\uC785\uB2C8\uB2E4.",
     day: "DAY 4",
-    route: "발디즈 · 콜롬비아 빙하",
-    image: "/alaska-mobile/day4-3.webp",
+    route: "\uBC1C\uB514\uC988 \u00B7 \uCF5C\uB86C\uBE44\uC544 \uBE59\uD558",
+    image: "/alaska-mobile/highlight-panorama-1.webp",
   },
   {
-    key: "relaxed",
-    label: "여유 중심",
-    summary: "이동 템포를 무리하지 않게 가져가는 DAY 6~8 구간이 맞습니다.",
-    day: "DAY 8",
-    route: "솔도트나 · 키나이강",
-    image: "/alaska-mobile/day8-1.webp",
+    key: "aurora",
+    label: "\uC624\uB85C\uB77C \uC911\uC2EC",
+    summary: "\uBC24\uD558\uB298 \uC624\uB85C\uB77C\uB97C \uBCF8\uACA9\uC801\uC73C\uB85C \uBCF4\uACE0 \uC2F6\uC73C\uBA74 \uAC00\uC744\u00B7\uACA8\uC6B8 \uC2DC\uC98C\uC774 \uB9DE\uC2B5\uB2C8\uB2E4.",
+    day: "SEASON",
+    route: "\uD398\uC5B4\uBC45\uD06C\uC2A4 \u00B7 \uC624\uB85C\uB77C \uD3EC\uC778\uD2B8",
+    image: "/alaska-mobile/highlight-aurora-hero.webp",
   },
   {
     key: "fishing",
-    label: "도시어부 중심",
-    summary: "호머 촬영 포인트와 광어 낚시를 원하면 DAY 7이 핵심입니다.",
+    label: "\uB099\uC2DC \uC911\uC2EC",
+    summary: "\uD638\uBA38 \uBC14\uB2E4 \uD3EC\uC778\uD2B8\uC5D0\uC11C \uAD11\uC5B4 \uB099\uC2DC \uBD84\uC704\uAE30\uB97C \uD06C\uAC8C \uB290\uB07C\uB824\uBA74 DAY 7\uC774 \uB9DE\uC2B5\uB2C8\uB2E4.",
     day: "DAY 7",
-    route: "호머 · 스핏",
-    image: "/alaska-mobile/day7-2.webp",
+    route: "\uD638\uBA38 \u00B7 \uC2A4\uD54F",
+    image: "/alaska-mobile/highlight-fishing-1.webp",
+  },
+  {
+    key: "salmon",
+    label: "\uC5F0\uC5B4 \uC911\uC2EC",
+    summary: "\uC5F0\uC5B4 \uBD80\uD654\uC7A5\uACFC \uC0DD\uD0DC \uC7A5\uBA74\uC744 \uBCF4\uACE0 \uC2F6\uB2E4\uBA74 DAY 5 \uB8E8\uD2B8\uAC00 \uD575\uC2EC\uC785\uB2C8\uB2E4.",
+    day: "DAY 5",
+    route: "\uC194\uB85C\uBAAC \uC5F0\uC5B4\uBD80\uD654\uC7A5 \u00B7 \uB9C8\uD0C0\uB204\uC2A4\uCE74",
+    image: "/alaska-mobile/highlight-salmon-1.webp",
+  },
+  {
+    key: "relaxed",
+    label: "\uC5EC\uC720 \uC911\uC2EC",
+    summary: "\uC774\uB3D9 \uD15C\uD3EC\uB97C \uBB34\uB9AC\uD558\uC9C0 \uC54A\uAC8C \uAC00\uC838\uAC00\uB294 DAY 6~8 \uAD6C\uAC04\uC774 \uB9DE\uC2B5\uB2C8\uB2E4.",
+    day: "DAY 8",
+    route: "\uC194\uB3C4\uD2B8\uB098 \u00B7 \uD0A4\uB098\uC774\uAC15",
+    image: "/alaska-mobile/day8-1.webp",
   },
 ];
 
@@ -541,17 +557,48 @@ const buildSummerSeasonPhotos = (): SeasonGalleryPhoto[] => {
 
   const photos: SeasonGalleryPhoto[] = [];
 
+  const summerImageOverrides: Partial<Record<number, string[]>> = {
+    3: [
+      "/alaska-mobile/highlight-panorama-1.webp",
+      "/alaska-mobile/highlight-panorama-2.webp",
+      "/alaska-mobile/day3-3.webp",
+    ],
+    4: [
+      "/alaska-mobile/day4-1.webp",
+      "/alaska-mobile/highlight-glacier-cruise-1.webp",
+      "/alaska-mobile/day4-3.webp",
+    ],
+    5: [
+      "/alaska-mobile/highlight-salmon-1.webp",
+      "/alaska-mobile/highlight-salmon-2.webp",
+      "/alaska-mobile/highlight-salmon-bear-1.webp",
+    ],
+    7: [
+      "/alaska-mobile/highlight-fishing-1.webp",
+      "/alaska-mobile/highlight-fishing-2.webp",
+      "/alaska-mobile/day7-3.webp",
+    ],
+  };
+
   for (let day = 1; day <= 9; day += 1) {
-    for (let cut = 1; cut <= 3; cut += 1) {
+    const dayImages = summerImageOverrides[day] ?? [
+      `/alaska-mobile/day${day}-1.webp`,
+      `/alaska-mobile/day${day}-2.webp`,
+      `/alaska-mobile/day${day}-3.webp`,
+    ];
+
+    dayImages.forEach((image, index) => {
+      const cut = index + 1;
+
       photos.push({
         id: `summer-day${day}-${cut}`,
-        image: `/alaska-mobile/day${day}-${cut}.webp`,
+        image,
         title: `DAY ${day} · ${summerSpots[day]} 장면 ${cut}`,
         dayLabel: `DAY ${day}`,
         day,
         spot: summerSpots[day],
       });
-    }
+    });
   }
 
   return photos;
@@ -570,9 +617,9 @@ const springSeasonPhotos: SeasonGalleryPhoto[] = [
 
 const fallSeasonPhotos: SeasonGalleryPhoto[] = [
   { id: "fall-1", image: "/alaska-mobile/season-fall.webp", title: "가을 대표 단풍 장면", dayLabel: "FALL", spot: "가을 프리뷰" },
-  { id: "fall-2", image: "/alaska-mobile/story-4.webp", title: "황금빛 파노라마 루트", dayLabel: "FALL", spot: "헤쳐패스" },
-  { id: "fall-3", image: "/alaska-mobile/day3-1.webp", title: "단풍과 산맥 드라이브", dayLabel: "FALL", spot: "발디즈 구간" },
-  { id: "fall-4", image: "/alaska-mobile/day3-3.webp", title: "가을 협곡 풍경", dayLabel: "FALL", spot: "키스톤 캐년" },
+  { id: "fall-2", image: "/alaska-mobile/highlight-panorama-fall.webp", title: "황금빛 파노라마 루트", dayLabel: "FALL", spot: "헤쳐패스" },
+  { id: "fall-3", image: "/alaska-mobile/highlight-panorama-1.webp", title: "단풍과 산맥 드라이브", dayLabel: "FALL", spot: "발디즈 구간" },
+  { id: "fall-4", image: "/alaska-mobile/highlight-aurora-fall-1.webp", title: "가을 협곡 풍경", dayLabel: "FALL", spot: "키스톤 캐년" },
   { id: "fall-5", image: "/alaska-mobile/day5-3.webp", title: "레이어가 깊은 능선 뷰", dayLabel: "FALL", spot: "랭겔 권역" },
   { id: "fall-6", image: "/alaska-mobile/day8-3.webp", title: "노을빛 고속도로", dayLabel: "FALL", spot: "귀환 루트" },
   { id: "fall-7", image: "/alaska-mobile/story-3.webp", title: "항구의 가을 공기", dayLabel: "FALL", spot: "호머" },
@@ -581,9 +628,9 @@ const fallSeasonPhotos: SeasonGalleryPhoto[] = [
 
 const winterSeasonPhotos: SeasonGalleryPhoto[] = [
   { id: "winter-1", image: "/alaska-mobile/season-winter.webp", title: "겨울 대표 설경", dayLabel: "WINTER", spot: "겨울 프리뷰" },
-  { id: "winter-2", image: "/alaska-mobile/hero-2.webp", title: "빙하와 설산 전경", dayLabel: "WINTER", spot: "빙하 권역" },
-  { id: "winter-3", image: "/alaska-mobile/story-2.webp", title: "겨울 빙하 포인트", dayLabel: "WINTER", spot: "콜롬비아 빙하" },
-  { id: "winter-4", image: "/alaska-mobile/day4-1.webp", title: "빙벽 근접 장면", dayLabel: "WINTER", spot: "선상 투어" },
+  { id: "winter-2", image: "/alaska-mobile/highlight-aurora-1.webp", title: "겨울 오로라 나이트", dayLabel: "WINTER", spot: "빙하 권역" },
+  { id: "winter-3", image: "/alaska-mobile/highlight-aurora-2.webp", title: "오로라 리본 장면", dayLabel: "WINTER", spot: "콜롬비아 빙하" },
+  { id: "winter-4", image: "/alaska-mobile/highlight-aurora-hero.webp", title: "오로라 대표 포인트", dayLabel: "WINTER", spot: "선상 투어" },
   { id: "winter-5", image: "/alaska-mobile/day4-2.webp", title: "유빙을 가르는 항로", dayLabel: "WINTER", spot: "프린스 윌리엄 사운드" },
   { id: "winter-6", image: "/alaska-mobile/day5-1.webp", title: "차창 밖 설원", dayLabel: "WINTER", spot: "마타누스카" },
   { id: "winter-7", image: "/alaska-mobile/day5-2.webp", title: "새하얀 빙하 조망", dayLabel: "WINTER", spot: "워딩턴" },
@@ -643,4 +690,3 @@ export const seasonGalleryGroups: SeasonGalleryGroup[] = [
     photos: winterSeasonPhotos,
   },
 ];
-

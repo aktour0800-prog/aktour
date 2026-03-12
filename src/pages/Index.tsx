@@ -5,6 +5,8 @@ import {
   ArrowLeftRight,
   ArrowRight,
   CalendarDays,
+  ChevronLeft,
+  ChevronRight,
   MessageSquareText,
   PhoneCall,
   Sparkles,
@@ -1020,11 +1022,30 @@ const Index = () => {
             </div>
           </div>
 
-          <div ref={shortsFeedRef} className="shorts-feed h-[100svh] overflow-y-auto snap-y snap-mandatory">
+          <div ref={shortsFeedRef} className="shorts-feed h-[100svh] overflow-y-auto snap-y snap-mandatory" style={{ touchAction: "pan-y" }}>
             {shortsDayGroups.map((group, groupIndex) => {
               const currentHorizontal = shortsHorizontalIndex[group.key] ?? 0;
               const activePhoto =
                 group.photos[Math.max(0, Math.min(group.photos.length - 1, currentHorizontal))] ?? group.photos[0];
+              const hasMultipleCuts = group.photos.length > 1;
+
+              const moveHorizontal = (direction: 1 | -1) => {
+                const row = shortsRowRefs.current[group.key];
+                if (!row) {
+                  return;
+                }
+
+                row.scrollBy({ left: direction * row.clientWidth, behavior: "smooth" });
+              };
+
+              const moveToHorizontalIndex = (nextIndex: number) => {
+                const row = shortsRowRefs.current[group.key];
+                if (!row) {
+                  return;
+                }
+
+                row.scrollTo({ left: row.clientWidth * nextIndex, behavior: "smooth" });
+              };
 
               return (
                 <article key={group.key} className="shorts-frame relative h-[100svh] snap-start overflow-hidden">
@@ -1033,6 +1054,7 @@ const Index = () => {
                       shortsRowRefs.current[group.key] = node;
                     }}
                     className="flex h-full w-full overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+                    style={{ touchAction: "pan-x" }}
                     onScroll={(event) => {
                       const viewportWidth = Math.max(event.currentTarget.clientWidth, 1);
                       const nextIndex = Math.round(event.currentTarget.scrollLeft / viewportWidth);
@@ -1056,6 +1078,27 @@ const Index = () => {
                     ))}
                   </div>
 
+                  {hasMultipleCuts ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => moveHorizontal(-1)}
+                        className="absolute left-3 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/50 bg-black/40 text-white"
+                        aria-label="이전 컷 보기"
+                      >
+                        <ChevronLeft className="h-5 w-5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveHorizontal(1)}
+                        className="absolute right-3 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/50 bg-black/40 text-white"
+                        aria-label="다음 컷 보기"
+                      >
+                        <ChevronRight className="h-5 w-5" />
+                      </button>
+                    </>
+                  ) : null}
+
                   <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-3xl space-y-3 px-4 pb-[calc(env(safe-area-inset-bottom)+22px)]">
                     <p className="wow-ribbon">
                       {group.label} · {activePhoto.spot}
@@ -1063,9 +1106,25 @@ const Index = () => {
                     <h3 className="font-brand text-[30px] font-semibold leading-tight text-white">{activePhoto.title}</h3>
                     <p className="text-[16px] text-white/85">실제 보유 이미지 기반 숏폼 장면입니다.</p>
 
+                    {hasMultipleCuts ? (
+                      <div className="flex items-center gap-2">
+                        {group.photos.map((photo, photoIndex) => (
+                          <button
+                            key={`dot-${group.key}-${photo.id}`}
+                            type="button"
+                            onClick={() => moveToHorizontalIndex(photoIndex)}
+                            className={`h-2.5 rounded-full transition-all ${
+                              currentHorizontal === photoIndex ? "w-7 bg-accent" : "w-2.5 bg-white/55"
+                            }`}
+                            aria-label={`cut ${photoIndex + 1}`}
+                          />
+                        ))}
+                      </div>
+                    ) : null}
+
                     <div className="flex flex-wrap gap-2">
                       <p className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-[16px] font-medium text-white">
-                        <ArrowLeftRight className="h-4 w-4" /> 좌우로 {group.photos.length}컷 보기
+                        <ArrowLeftRight className="h-4 w-4" /> 좌우 스와이프/버튼으로 {group.photos.length}컷 보기
                       </p>
                       {groupIndex < shortsDayGroups.length - 1 ? (
                         <p className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-[16px] font-medium text-white">
