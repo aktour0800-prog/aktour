@@ -34,6 +34,8 @@ import {
 } from "@/data/summerCampaignData";
 
 const HERO_REVEAL_MS = 2000;
+const HERO_COPY_DELAY_MS = 380;
+const HERO_CTA_DELAY_MS = 980;
 const HERO_FAST_CYCLE_MS = 420;
 const HERO_SLOW_CYCLE_MS = 5200;
 
@@ -48,6 +50,8 @@ type InquiryFeedback = { type: "idle" | "error" | "success"; message: string };
 
 const Index = () => {
   const [showHeroContent, setShowHeroContent] = useState(false);
+  const [showHeroCopy, setShowHeroCopy] = useState(false);
+  const [showHeroActions, setShowHeroActions] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
   const [headerHidden, setHeaderHidden] = useState(false);
   const [activeSeason, setActiveSeason] = useState<GallerySeasonKey>("summer");
@@ -266,6 +270,22 @@ const Index = () => {
 
     return () => window.clearInterval(slider);
   }, [heroImages.length, showHeroContent]);
+
+  useEffect(() => {
+    if (!showHeroContent) {
+      setShowHeroCopy(false);
+      setShowHeroActions(false);
+      return;
+    }
+
+    const copyTimer = window.setTimeout(() => setShowHeroCopy(true), HERO_COPY_DELAY_MS);
+    const ctaTimer = window.setTimeout(() => setShowHeroActions(true), HERO_CTA_DELAY_MS);
+
+    return () => {
+      window.clearTimeout(copyTimer);
+      window.clearTimeout(ctaTimer);
+    };
+  }, [showHeroContent]);
 
   useEffect(() => {
     if (!showHeroContent) {
@@ -512,27 +532,41 @@ const Index = () => {
           ))}
 
           <div
-            className={`absolute inset-0 transition-all duration-700 ${showHeroContent ? "opacity-100" : "opacity-85"}`}
+            className={`absolute inset-0 transition-all [transition-duration:1800ms] ease-out ${showHeroContent ? "opacity-100" : "opacity-80"}`}
             style={{ background: "var(--gradient-hero)" }}
           />
 
           <div className="relative mx-auto flex min-h-[100svh] w-full max-w-5xl flex-col justify-end px-4 pb-16 pt-24">
-            <div
-              className={`max-w-lg space-y-3 transition-all duration-700 ${
-                showHeroContent ? "translate-y-0 opacity-100 blur-0" : "translate-y-6 opacity-0 blur-[2px]"
-              }`}
-            >
-              <p className="inline-flex rounded-full border border-white/30 bg-black/30 px-3 py-1 text-[16px] font-semibold text-white">
+            <div className="max-w-lg space-y-3">
+              <p
+                className={`inline-flex rounded-full border border-white/30 bg-black/30 px-3 py-1 text-[16px] font-semibold text-white transition-all [transition-duration:1200ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
+                  showHeroCopy ? "translate-y-0 opacity-100 blur-0" : "translate-y-4 opacity-0 blur-[2px]"
+                }`}
+              >
                 도시어부 촬영지 · 12명 프리미엄 소그룹
               </p>
-              <h1 className="font-brand text-[34px] font-semibold leading-tight text-white sm:text-[40px]">
+              <h1
+                className={`font-brand text-[34px] font-semibold leading-tight text-white transition-all [transition-duration:1350ms] [transition-delay:120ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] sm:text-[40px] ${
+                  showHeroCopy ? "translate-y-0 opacity-100 blur-0" : "translate-y-5 opacity-0 blur-[3px]"
+                }`}
+              >
                 눈으로 확신하는 알래스카,
                 <br />
                 이번 여름 단 12석
               </h1>
-              <p className="text-[17px] font-medium text-white/95">2026년 7월 단 1회 확정 · 8박 9일</p>
+              <p
+                className={`text-[17px] font-medium text-white/95 transition-all [transition-duration:1300ms] [transition-delay:220ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
+                  showHeroCopy ? "translate-y-0 opacity-100 blur-0" : "translate-y-5 opacity-0 blur-[2px]"
+                }`}
+              >
+                2026년 7월 단 1회 확정 · 8박 9일
+              </p>
 
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <div
+                className={`grid grid-cols-1 gap-2 transition-all [transition-duration:1200ms] [transition-delay:360ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] sm:grid-cols-2 ${
+                  showHeroActions ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0 pointer-events-none"
+                }`}
+              >
                 <button
                   type="button"
                   onClick={() => setShowHeroCallSheet(true)}
@@ -1225,6 +1259,3 @@ const Index = () => {
 };
 
 export default Index;
-
-
-
