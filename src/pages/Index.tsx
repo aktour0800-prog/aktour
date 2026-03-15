@@ -33,11 +33,11 @@ import {
   type SeasonGalleryPhoto,
 } from "@/data/summerCampaignData";
 
-const HERO_REVEAL_MS = 2000;
-const HERO_COPY_DELAY_MS = 380;
-const HERO_CTA_DELAY_MS = 980;
-const HERO_FAST_CYCLE_MS = 420;
-const HERO_SLOW_CYCLE_MS = 5200;
+const HERO_INTRO_MS = 2000;
+const HERO_ACTION_DELAY_MS = 980;
+const HERO_CYCLE_MS = 7600;
+
+type HeroPhase = "intro" | "copy" | "actions";
 
 interface ShortsDayGroup {
   key: string;
@@ -49,11 +49,10 @@ interface ShortsDayGroup {
 type InquiryFeedback = { type: "idle" | "error" | "success"; message: string };
 
 const Index = () => {
-  const [showHeroContent, setShowHeroContent] = useState(false);
-  const [showHeroCopy, setShowHeroCopy] = useState(false);
-  const [showHeroActions, setShowHeroActions] = useState(false);
+  const [heroPhase, setHeroPhase] = useState<HeroPhase>("intro");
   const [heroIndex, setHeroIndex] = useState(0);
   const [headerHidden, setHeaderHidden] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [activeSeason, setActiveSeason] = useState<GallerySeasonKey>("summer");
   const [activeSummerDay, setActiveSummerDay] = useState<number | "all">("all");
   const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
@@ -77,6 +76,9 @@ const Index = () => {
   const shortsIndexRef = useRef(0);
 
   const heroImages = ["/alaska-mobile/hero-1.webp", "/alaska-mobile/hero-2.webp", "/alaska-mobile/hero-3.webp"];
+  const isHeroIntro = heroPhase === "intro";
+  const showHeroCopy = heroPhase !== "intro";
+  const showHeroActions = heroPhase === "actions";
 
   const activeSeasonGallery = useMemo(
     () => seasonGalleryGroups.find((group) => group.key === activeSeason) ?? seasonGalleryGroups[0],
@@ -241,54 +243,56 @@ const Index = () => {
   };
 
   useEffect(() => {
-    if (showHeroContent) {
+    if (typeof window === "undefined") {
       return;
     }
 
-    const reveal = () => setShowHeroContent(true);
-    const revealOnScroll = () => {
-      if (window.scrollY > 36) {
-        reveal();
-      }
-    };
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const applyPreference = () => setPrefersReducedMotion(mediaQuery.matches);
+    applyPreference();
 
-    const revealTimer = window.setTimeout(reveal, HERO_REVEAL_MS);
-    window.addEventListener("scroll", revealOnScroll, { passive: true });
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", applyPreference);
+      return () => mediaQuery.removeEventListener("change", applyPreference);
+    }
 
-    return () => {
-      window.clearTimeout(revealTimer);
-      window.removeEventListener("scroll", revealOnScroll);
-    };
-  }, [showHeroContent]);
+    mediaQuery.addListener(applyPreference);
+    return () => mediaQuery.removeListener(applyPreference);
+  }, []);
 
   useEffect(() => {
-    const cycleMs = showHeroContent ? HERO_SLOW_CYCLE_MS : HERO_FAST_CYCLE_MS;
+    setHeroIndex(0);
 
-    const slider = window.setInterval(() => {
-      setHeroIndex((prev) => (prev + 1) % heroImages.length);
-    }, cycleMs);
-
-    return () => window.clearInterval(slider);
-  }, [heroImages.length, showHeroContent]);
-
-  useEffect(() => {
-    if (!showHeroContent) {
-      setShowHeroCopy(false);
-      setShowHeroActions(false);
+    if (prefersReducedMotion) {
+      setHeroPhase("actions");
       return;
     }
 
-    const copyTimer = window.setTimeout(() => setShowHeroCopy(true), HERO_COPY_DELAY_MS);
-    const ctaTimer = window.setTimeout(() => setShowHeroActions(true), HERO_CTA_DELAY_MS);
+    setHeroPhase("intro");
+
+    const copyTimer = window.setTimeout(() => setHeroPhase("copy"), HERO_INTRO_MS);
+    const actionTimer = window.setTimeout(() => setHeroPhase("actions"), HERO_INTRO_MS + HERO_ACTION_DELAY_MS);
 
     return () => {
       window.clearTimeout(copyTimer);
-      window.clearTimeout(ctaTimer);
+      window.clearTimeout(actionTimer);
     };
-  }, [showHeroContent]);
+  }, [prefersReducedMotion]);
 
   useEffect(() => {
-    if (!showHeroContent) {
+    if (isHeroIntro || prefersReducedMotion) {
+      return;
+    }
+
+    const slider = window.setInterval(() => {
+      setHeroIndex((prev) => (prev + 1) % heroImages.length);
+    }, HERO_CYCLE_MS);
+
+    return () => window.clearInterval(slider);
+  }, [heroImages.length, isHeroIntro, prefersReducedMotion]);
+
+  useEffect(() => {
+    if (!showHeroActions) {
       return;
     }
 
@@ -314,7 +318,7 @@ const Index = () => {
     return () => {
       window.removeEventListener("scroll", handleHeaderVisibility);
     };
-  }, [showHeroContent]);
+  }, [showHeroActions]);
 
   useEffect(() => {
     if (!selectedPhotoId) {
@@ -515,7 +519,7 @@ const Index = () => {
         jsonLd={jsonLd}
       />
 
-      {showHeroContent ? <Header hidden={headerHidden} /> : null}
+      {showHeroActions ? <Header hidden={headerHidden} /> : null}
 
       <main className="pb-28">
         <section className="relative min-h-[100svh] overflow-hidden">
@@ -525,28 +529,36 @@ const Index = () => {
               src={src}
               alt="알래스카 대표 풍경"
               loading={index === 0 ? "eager" : "lazy"}
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity ${
-                showHeroContent ? "duration-1000" : "duration-500"
-              } ${heroIndex === index ? "opacity-100" : "opacity-0"}`}
+              className={`absolute inset-0 h-full w-full transform-gpu object-cover transition-opacity [transition-duration:1300ms] ease-out ${
+                heroIndex === index ? "opacity-100" : "opacity-0"
+              } ${index === 0 && isHeroIntro && !prefersReducedMotion ? "hero-kenburns-intro" : ""}`}
             />
           ))}
 
           <div
-            className={`absolute inset-0 transition-all [transition-duration:1800ms] ease-out ${showHeroContent ? "opacity-100" : "opacity-80"}`}
-            style={{ background: "var(--gradient-hero)" }}
+            className={`pointer-events-none absolute inset-0 transition-opacity [transition-duration:1400ms] ease-out ${showHeroCopy ? "opacity-100" : "opacity-90"}`}
+            style={{ background: "var(--gradient-hero-cool)" }}
+          />
+          <div
+            className={`pointer-events-none absolute inset-0 transition-opacity [transition-duration:1700ms] ease-out ${showHeroCopy ? "opacity-100" : "opacity-92"}`}
+            style={{ background: "var(--gradient-hero-deep)" }}
+          />
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{ background: "var(--gradient-hero-vignette)" }}
           />
 
           <div className="relative mx-auto flex min-h-[100svh] w-full max-w-5xl flex-col justify-end px-4 pb-16 pt-24">
-            <div className="max-w-lg space-y-3">
+            <div className="max-w-lg space-y-3 rounded-[30px] border border-white/20 bg-[linear-gradient(145deg,rgba(5,20,41,0.34),rgba(5,20,41,0.16)_58%,rgba(255,255,255,0.06))] px-4 py-5 shadow-[0_20px_48px_-34px_rgba(3,12,27,0.95)] backdrop-blur-[2px] sm:px-6 sm:py-6">
               <p
-                className={`inline-flex rounded-full border border-white/30 bg-black/30 px-3 py-1 text-[16px] font-semibold text-white transition-all [transition-duration:1200ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
+                className={`inline-flex rounded-full border border-white/35 bg-[rgba(10,28,54,0.4)] px-3 py-1 text-[16px] font-semibold text-white transition-all [transition-duration:1200ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
                   showHeroCopy ? "translate-y-0 opacity-100 blur-0" : "translate-y-4 opacity-0 blur-[2px]"
                 }`}
               >
                 도시어부 촬영지 · 12명 프리미엄 소그룹
               </p>
               <h1
-                className={`font-brand text-[34px] font-semibold leading-tight text-white transition-all [transition-duration:1350ms] [transition-delay:120ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] sm:text-[40px] ${
+                className={`font-brand text-[36px] font-semibold leading-[1.22] tracking-[-0.01em] text-white transition-all [transition-duration:1400ms] [transition-delay:120ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] sm:text-[42px] ${
                   showHeroCopy ? "translate-y-0 opacity-100 blur-0" : "translate-y-5 opacity-0 blur-[3px]"
                 }`}
               >
@@ -563,21 +575,21 @@ const Index = () => {
               </p>
 
               <div
-                className={`grid grid-cols-1 gap-2 transition-all [transition-duration:1200ms] [transition-delay:360ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] sm:grid-cols-2 ${
+                className={`grid grid-cols-1 gap-2 transition-all [transition-duration:1200ms] [transition-delay:180ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] sm:grid-cols-2 ${
                   showHeroActions ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0 pointer-events-none"
                 }`}
               >
                 <button
                   type="button"
                   onClick={() => setShowHeroCallSheet(true)}
-                  className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl bg-accent px-4 text-[17px] font-bold text-primary shadow-gold"
+                  className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-[#e2b855] bg-accent px-4 text-[17px] font-bold text-primary shadow-[0_10px_24px_-18px_rgba(214,161,53,0.95)]"
                 >
                   <PhoneCall className="h-5 w-5" />
                   상담 전화하기
                 </button>
                 <Link
                   to="/summer-itinerary"
-                  className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-white/55 bg-black/20 px-4 text-[17px] font-semibold text-white"
+                  className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-white/65 bg-[rgba(5,17,34,0.24)] px-4 text-[17px] font-semibold text-white"
                 >
                   알래스카 여행 일정
                   <ArrowRight className="h-5 w-5" />
@@ -1253,7 +1265,7 @@ const Index = () => {
       ) : null}
 
       <Footer />
-      {showHeroContent ? <FloatingCallButton /> : null}
+      {showHeroActions ? <FloatingCallButton /> : null}
     </div>
   );
 };
