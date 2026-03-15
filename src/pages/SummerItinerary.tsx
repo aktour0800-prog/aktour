@@ -14,6 +14,7 @@ import {
   excludes,
   faqItems,
   includes,
+  summerCampaignClock,
   summerSummary,
 } from "@/data/summerCampaignData";
 
@@ -22,6 +23,14 @@ const PRIMARY_CALL_COPY = "\uC9C0\uAE08 \uC88C\uC11D \uD655\uC778 \uC804\uD654";
 const SummerItinerary = () => {
   const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null);
   const [headerHidden, setHeaderHidden] = useState(false);
+  const [now, setNow] = useState(() => new Date());
+
+  const departureAt = useMemo(() => new Date(summerCampaignClock.departureAt), []);
+  const dDay = useMemo(() => {
+    const msPerDay = 1000 * 60 * 60 * 24;
+    return Math.ceil((departureAt.getTime() - now.getTime()) / msPerDay);
+  }, [departureAt, now]);
+  const dDayLabel = dDay > 0 ? `D-${dDay}` : dDay === 0 ? "D-DAY" : "\uCD9C\uBC1C \uC774\uD6C4";
 
   useRevealOnScroll();
   const jsonLd = useMemo(
@@ -70,6 +79,11 @@ const SummerItinerary = () => {
       const cleanUrl = `${window.location.pathname}${window.location.search}`;
       window.history.replaceState(null, "", cleanUrl);
     }
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 60_000);
+    return () => window.clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -126,11 +140,17 @@ const SummerItinerary = () => {
               />
             </button>
             <div className="space-y-3 p-5">
-              <p className="text-[16px] font-semibold text-accent">여름 확정 상품</p>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-[16px] font-semibold text-accent">{"\uC5EC\uB984 \uD655\uC815 \uC0C1\uD488"}</p>
+                <p className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[15px] font-bold text-primary">
+                  {dDayLabel}
+                </p>
+              </div>
               <h1 className="text-[32px] font-bold leading-tight">{summerSummary.title}</h1>
               <p className="text-[17px] font-semibold text-primary">{summerSummary.period}</p>
               <p className="text-[24px] font-bold">{summerSummary.price}</p>
-              <p className="text-[16px] text-foreground/80">항공: {summerSummary.airline}</p>
+              <p className="text-[16px] text-foreground/80">{"\uD56D\uACF5"}: {summerSummary.airline}</p>
+              <p className="text-[16px] font-semibold text-primary">{"\uC815\uC6D0 12\uBA85 \uC18C\uC218 \uC6B4\uC601 \u00B7 \uC794\uC5EC \uC88C\uC11D\uC740 \uC804\uD654 \uD655\uC778 \uD544\uC218"}</p>
 
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {contacts.map((contact, index) => (
@@ -267,8 +287,11 @@ const SummerItinerary = () => {
 
         <section data-reveal className="mx-auto mt-10 w-full max-w-5xl px-4">
           <div className="rounded-3xl border bg-primary px-5 py-6 text-white">
-            <h2 className="text-[28px] font-bold leading-tight">일정이 맞는지 지금 확인해보세요</h2>
-            <p className="mt-2 text-[16px] text-white/85">상담 시 항공 좌석/출발 가능 여부를 바로 확인해드립니다.</p>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-[28px] font-bold leading-tight">{"\uC77C\uC815\uC774 \uB9DE\uB294\uC9C0 \uC9C0\uAE08 \uD655\uC778\uD574\uBCF4\uC138\uC694"}</h2>
+              <p className="inline-flex items-center rounded-full bg-white/20 px-3 py-1 text-[15px] font-bold text-white">{dDayLabel}</p>
+            </div>
+            <p className="mt-2 text-[16px] text-white/85">{"\uC815\uC6D0 12\uBA85 \uC18C\uC218 \uC6B4\uC601 \u00B7 \uC794\uC5EC \uC88C\uC11D\uC740 \uC804\uD654\uB85C\uB9CC \uC548\uB0B4\uB429\uB2C8\uB2E4."}</p>
             <div className="mt-5 grid gap-2">
               {contacts.map((contact) => (
                 <a

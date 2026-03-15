@@ -29,6 +29,7 @@ import {
   seasonGalleryGroups,
   storyCards,
   summerSummary,
+  summerCampaignClock,
   tasteMatches,
   trustMetrics,
   wowPoints,
@@ -60,6 +61,7 @@ const Index = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [activeSeason, setActiveSeason] = useState<GallerySeasonKey>("summer");
   const [activeSummerDay, setActiveSummerDay] = useState<number | "all">("all");
+  const [now, setNow] = useState(() => new Date());
   const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null);
   const [selectedTasteKey, setSelectedTasteKey] = useState(tasteMatches[0].key);
@@ -104,6 +106,12 @@ const Index = () => {
   const isHeroIntro = heroPhase === "intro";
   const showHeroCopy = heroPhase !== "intro";
   const showHeroActions = heroPhase === "actions";
+  const departureAt = useMemo(() => new Date(summerCampaignClock.departureAt), []);
+  const dDay = useMemo(() => {
+    const msPerDay = 1000 * 60 * 60 * 24;
+    return Math.ceil((departureAt.getTime() - now.getTime()) / msPerDay);
+  }, [departureAt, now]);
+  const dDayLabel = dDay > 0 ? `D-${dDay}` : dDay === 0 ? "D-DAY" : "\uCD9C\uBC1C \uC774\uD6C4";
 
   const activeSeasonGallery = useMemo(
     () => seasonGalleryGroups.find((group) => group.key === activeSeason) ?? seasonGalleryGroups[0],
@@ -283,6 +291,11 @@ const Index = () => {
 
     mediaQuery.addListener(applyPreference);
     return () => mediaQuery.removeListener(applyPreference);
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 60_000);
+    return () => window.clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -613,6 +626,13 @@ const Index = () => {
                 2026년 7월 단 1회 확정 · 8박 9일
               </p>
 
+              <p
+                className={`text-[16px] font-semibold text-accent transition-all [transition-duration:1300ms] [transition-delay:320ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
+                  showHeroCopy ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+                }`}
+              >
+                {"\uC815\uC6D0 12\uBA85 \uC18C\uC218 \uC6B4\uC601 \u00B7 "}{dDayLabel}{" \u00B7 \uC794\uC5EC \uC88C\uC11D\uC740 \uC804\uD654\uB85C\uB9CC \uC548\uB0B4"}
+              </p>
               <div
                 className={`grid grid-cols-1 gap-2 transition-all [transition-duration:1200ms] [transition-delay:180ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] sm:grid-cols-2 ${
                   showHeroActions ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"
@@ -664,10 +684,16 @@ const Index = () => {
 
         <section id="summer-offer" data-reveal className="mx-auto mt-10 w-full max-w-5xl px-4">
           <div className="rounded-3xl border bg-primary px-5 py-6 text-white shadow-elegant">
-            <p className="text-[16px] text-white/80">{"\uC5EC\uB984 \uD655\uC815 \uC624\uD37C"}</p>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-[16px] text-white/80">{"\uC5EC\uB984 \uD655\uC815 \uC624\uD37C"}</p>
+              <p className="inline-flex items-center rounded-full bg-white/20 px-3 py-1 text-[15px] font-bold text-white">
+                {dDayLabel}
+              </p>
+            </div>
             <h2 className="mt-1 font-brand text-[31px] font-semibold leading-tight">{summerSummary.title}</h2>
             <p className="mt-3 text-[17px] font-semibold text-accent">{summerSummary.period}</p>
             <p className="mt-1 text-[23px] font-bold">{summerSummary.price}</p>
+            <p className="mt-2 text-[16px] text-white/85">{"\uC815\uC6D0 12\uBA85 \uC18C\uC218 \uC6B4\uC601 \u00B7 \uC794\uC5EC \uC88C\uC11D\uC740 \uC804\uD654\uB85C\uB9CC \uC548\uB0B4\uB429\uB2C8\uB2E4."}</p>
             <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
               <a
                 href={`tel:${contacts[0].tel}`}

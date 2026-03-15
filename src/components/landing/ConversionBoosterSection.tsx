@@ -326,7 +326,7 @@ const ConversionBoosterSection = () => {
           </div>
 
           <h2 className="font-brand text-[30px] font-semibold leading-tight text-white">여름 출발 카운트다운 진행 중</h2>
-          <p className="text-[16px] text-white/85">상담 순서 기준으로 좌석이 마감됩니다. 전화로 즉시 가능 좌석을 확인하세요.</p>
+          <p className="text-[16px] text-white/85">{"\uC815\uC6D0 12\uBA85 \uC18C\uC218 \uC6B4\uC601\uC73C\uB85C \uC794\uC5EC \uC88C\uC11D\uC740 \uBE60\uB974\uAC8C \uB9C8\uAC10\uB429\uB2C8\uB2E4. \uAF2D \uC804\uD654\uB85C \uC989\uC2DC \uD655\uC778\uD558\uC138\uC694."}</p>
 
           <div className="h-2 overflow-hidden rounded-full bg-white/25">
             <span
