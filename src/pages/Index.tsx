@@ -663,7 +663,7 @@ const Index = () => {
                     setActiveSeason(season.key);
                     setActiveSummerDay("all");
                   }}
-                  className={`inline-flex min-h-[46px] items-center rounded-full border px-4 text-[16px] font-semibold transition-all ${
+                  className={`inline-flex min-h-[48px] items-center rounded-full border px-4 text-[16px] font-semibold transition-all ${
                     isActive ? "border-primary bg-primary text-white" : "border-primary/20 bg-white text-primary"
                   }`}
                 >
@@ -682,7 +682,7 @@ const Index = () => {
                     key={`summer-${filter.label}`}
                     type="button"
                     onClick={() => setActiveSummerDay(filter.value)}
-                    className={`inline-flex min-h-[44px] items-center rounded-full border px-3 text-[16px] font-semibold transition-all ${
+                    className={`inline-flex min-h-[48px] items-center rounded-full border px-3 text-[16px] font-semibold transition-all ${
                       isActive ? "border-accent bg-accent text-primary" : "border-primary/20 bg-white text-primary"
                     }`}
                   >

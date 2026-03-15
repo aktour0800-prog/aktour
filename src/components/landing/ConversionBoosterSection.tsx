@@ -28,6 +28,7 @@ interface WaitlistState {
 }
 
 const WAITLIST_STORAGE_KEY = "alaska_waitlist_v2";
+const DEVICE_ID_STORAGE_KEY = "alaska_device_id_v1";
 
 const createDefaultWaitlistState = (): WaitlistState => ({
   liked: {
@@ -85,6 +86,20 @@ const loadWaitlistState = (): WaitlistState => {
   }
 };
 
+const getDeviceId = () => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const existing = window.localStorage.getItem(DEVICE_ID_STORAGE_KEY);
+  if (existing && /^[a-z0-9_-]{12,80}$/i.test(existing)) {
+    return existing.toLowerCase();
+  }
+
+  const generated = `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 14)}`;
+  window.localStorage.setItem(DEVICE_ID_STORAGE_KEY, generated);
+  return generated;
+};
 const ConversionBoosterSection = () => {
   const [now, setNow] = useState(() => new Date());
   const [waitlistState, setWaitlistState] = useState<WaitlistState>(() => loadWaitlistState());
@@ -182,7 +197,10 @@ const ConversionBoosterSection = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ season }),
+      body: JSON.stringify({
+        season,
+        deviceId: getDeviceId(),
+      }),
     }).catch(() => {
       // Like events are non-blocking for UX.
     });
@@ -378,7 +396,7 @@ const ConversionBoosterSection = () => {
                   <button
                     type="button"
                     onClick={() => openPreview(season.key, 0)}
-                    className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-primary/25 px-4 text-[16px] font-semibold text-primary"
+                    className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-primary/25 px-4 text-[16px] font-semibold text-primary"
                   >
                     미리보기 크게 보기
                   </button>

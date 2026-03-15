@@ -323,7 +323,7 @@ const Admin = () => {
               />
             </label>
 
-            {error ? <p className="rounded-xl bg-red-50 px-3 py-2 text-[15px] text-red-600">{error}</p> : null}
+            {error ? <p className="rounded-xl bg-red-50 px-3 py-2 text-[16px] text-red-600">{error}</p> : null}
 
             <button
               type="submit"
@@ -354,7 +354,7 @@ const Admin = () => {
                 type="button"
                 onClick={() => void loadLeads()}
                 disabled={loading}
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border px-3 text-[15px] font-semibold"
+                className="inline-flex min-h-[48px] items-center gap-2 rounded-xl border px-3 text-[16px] font-semibold"
               >
                 <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
                 새로고침
@@ -363,7 +363,7 @@ const Admin = () => {
                 type="button"
                 onClick={() => void handleLogout()}
                 disabled={loading}
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-primary px-3 text-[15px] font-semibold text-white"
+                className="inline-flex min-h-[48px] items-center gap-2 rounded-xl bg-primary px-3 text-[16px] font-semibold text-white"
               >
                 <LogOut className="h-4 w-4" />
                 로그아웃
@@ -373,24 +373,24 @@ const Admin = () => {
 
           <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-2xl border bg-secondary p-4">
-              <p className="text-[15px] text-muted-foreground">전체 리드</p>
+              <p className="text-[16px] text-muted-foreground">전체 리드</p>
               <p className="text-[28px] font-bold">{items.length}</p>
             </div>
             <div className="rounded-2xl border bg-secondary p-4">
-              <p className="text-[15px] text-muted-foreground">대기 신청</p>
+              <p className="text-[16px] text-muted-foreground">대기 신청</p>
               <p className="text-[28px] font-bold">{waitlistCount}</p>
             </div>
             <div className="rounded-2xl border bg-secondary p-4">
-              <p className="text-[15px] text-muted-foreground">좋아요</p>
+              <p className="text-[16px] text-muted-foreground">좋아요</p>
               <p className="text-[28px] font-bold">{likeCount}</p>
             </div>
             <div className="rounded-2xl border bg-secondary p-4">
-              <p className="text-[15px] text-muted-foreground">문의 남김</p>
+              <p className="text-[16px] text-muted-foreground">문의 남김</p>
               <p className="text-[28px] font-bold">{inquiryCount}</p>
             </div>
           </div>
 
-          {error ? <p className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-[15px] text-red-600">{error}</p> : null}
+          {error ? <p className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-[16px] text-red-600">{error}</p> : null}
         </header>
 
         <section className="rounded-3xl border bg-white p-4 shadow-card">
@@ -398,7 +398,7 @@ const Admin = () => {
           <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {summary.map((row) => (
               <article key={`${row.event_type}-${row.season}`} className="rounded-2xl border bg-background p-3">
-                <p className="text-[15px] text-muted-foreground">
+                <p className="text-[16px] text-muted-foreground">
                   {eventLabel[row.event_type]} · {seasonLabel[row.season]}
                 </p>
                 <p className="text-[24px] font-bold">{Number(row.count || 0)}</p>
@@ -411,7 +411,7 @@ const Admin = () => {
           <h2 className="text-[22px] font-bold">리드 상세 관리</h2>
 
           <div className="mt-3 overflow-x-auto">
-            <table className="min-w-full border-collapse text-left text-[14px]">
+            <table className="min-w-full border-collapse text-left text-[16px]">
               <thead>
                 <tr className="border-b bg-secondary">
                   <th className="px-3 py-2 font-semibold">시간</th>
@@ -451,7 +451,7 @@ const Admin = () => {
                               follow_up_status: event.target.value as FollowUpStatus,
                             })
                           }
-                          className="w-full rounded-lg border px-2 py-2 text-[14px]"
+                          className="w-full rounded-lg border px-2 py-2 text-[16px]"
                         >
                           {followUpOptions.map((status) => (
                             <option key={`${item.id}-${status}`} value={status}>
@@ -464,7 +464,7 @@ const Admin = () => {
                         <input
                           value={draft.memo}
                           onChange={(event) => updateDraft(item.id, { memo: event.target.value.slice(0, 500) })}
-                          className="w-full rounded-lg border px-2 py-2 text-[14px]"
+                          className="w-full rounded-lg border px-2 py-2 text-[16px]"
                           placeholder="메모 입력"
                         />
                       </td>
@@ -474,7 +474,7 @@ const Admin = () => {
                             type="button"
                             onClick={() => void handleSaveRow(item.id)}
                             disabled={isSaving || isDeleting}
-                            className="inline-flex min-h-[38px] items-center justify-center gap-1 rounded-lg bg-primary px-3 text-[14px] font-semibold text-white disabled:opacity-60"
+                            className="inline-flex min-h-[48px] items-center justify-center gap-1 rounded-lg bg-primary px-3 text-[16px] font-semibold text-white disabled:opacity-60"
                           >
                             <Save className="h-4 w-4" />
                             {isSaving ? "저장 중" : "저장"}
@@ -483,7 +483,7 @@ const Admin = () => {
                             type="button"
                             onClick={() => void handleDeleteRow(item.id)}
                             disabled={isSaving || isDeleting}
-                            className="inline-flex min-h-[38px] items-center justify-center gap-1 rounded-lg border border-red-200 bg-red-50 px-3 text-[14px] font-semibold text-red-700 disabled:opacity-60"
+                            className="inline-flex min-h-[48px] items-center justify-center gap-1 rounded-lg border border-red-200 bg-red-50 px-3 text-[16px] font-semibold text-red-700 disabled:opacity-60"
                           >
                             <Trash2 className="h-4 w-4" />
                             {isDeleting ? "삭제 중" : "삭제"}

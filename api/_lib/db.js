@@ -111,6 +111,12 @@ export const ensureSchema = async () => {
       WHERE event_type = 'waitlist' AND phone IS NOT NULL;
     `);
 
+    await client.query(`
+      CREATE UNIQUE INDEX IF NOT EXISTS lead_events_like_unique
+      ON lead_events (season, phone)
+      WHERE event_type = 'like' AND phone IS NOT NULL;
+    `);
+
     schemaReady = true;
   } finally {
     client.release();
