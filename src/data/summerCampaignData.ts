@@ -278,7 +278,7 @@ export const dayPlans: DayPlan[] = [
 
 export const faqItems = [
   {
-    question: "50대 이상도 일정 소화가 가능한가요?",
+    question: "일정 소화가 가능한가요?",
     answer:
       "가능합니다. 이동 템포를 무리하게 끌어올리지 않고, 핵심 포인트 중심으로 동선을 구성해 피로를 줄였습니다.",
   },
@@ -491,7 +491,7 @@ export const designEvidence: DesignEvidence[] = [
   {
     title: "상단 핵심 CTA 단일 집중",
     benchmark: "토스 홈/결제 플로우",
-    reason: "50대 모바일 사용자는 선택지가 많을수록 이탈이 늘어나기 때문에 1순위 행동을 크게 제시해야 전환이 올라갑니다.",
+    reason: "모바일 사용자는 선택지가 많을수록 이탈이 늘어나기 때문에 1순위 행동을 크게 제시해야 전환이 올라갑니다.",
     appliedPattern: "첫 화면에서 전화 상담과 일정 보기만 크게 배치",
   },
   {
@@ -690,3 +690,4 @@ export const seasonGalleryGroups: SeasonGalleryGroup[] = [
     photos: winterSeasonPhotos,
   },
 ];
+

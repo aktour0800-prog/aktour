@@ -487,7 +487,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SeoHead
-        title="알래스카 프리미엄 8박9일 | 50대 맞춤 소그룹"
+        title="알래스카 프리미엄 8박9일 | 프리미엄 알래스카 소그룹 여행"
         description="사진으로 먼저 설레고, 일정으로 확신하는 알래스카 여름 8박9일. 2026년 7월 출발 확정, 1인 9,500,000원(12명 기준)."
         path="/"
         image="/alaska-mobile/hero-1.webp"
@@ -1225,5 +1225,6 @@ const Index = () => {
 };
 
 export default Index;
+
 
 
