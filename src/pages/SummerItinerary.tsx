@@ -1,11 +1,12 @@
 ﻿import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { CalendarDays, CheckCircle2, PhoneCall, PlaneTakeoff, ShieldCheck, X, XCircle } from "lucide-react";
+import { CheckCircle2, PhoneCall, PlaneTakeoff, ShieldCheck, X, XCircle } from "lucide-react";
 
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
 import FloatingCallButton from "@/components/landing/FloatingCallButton";
 import SeoHead from "@/components/seo/SeoHead";
+import { trackCallIntent } from "@/lib/callIntent";
 import {
   contacts,
   dayPlans,
@@ -14,6 +15,8 @@ import {
   includes,
   summerSummary,
 } from "@/data/summerCampaignData";
+
+const PRIMARY_CALL_COPY = "\uC9C0\uAE08 \uC88C\uC11D \uD655\uC778 \uC804\uD654";
 
 const SummerItinerary = () => {
   const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null);
@@ -127,21 +130,34 @@ const SummerItinerary = () => {
               <p className="text-[16px] text-foreground/80">항공: {summerSummary.airline}</p>
 
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                <a
-                  href={`tel:${contacts[0].tel}`}
-                  className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[17px] font-bold text-primary"
-                >
-                  <PhoneCall className="h-5 w-5" />
-                  {contacts[0].name}
-                </a>
-                <a
-                  href={`tel:${contacts[1].tel}`}
-                  className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-primary/30 px-4 text-[17px] font-semibold text-primary"
-                >
-                  <CalendarDays className="h-5 w-5" />
-                  {contacts[1].name}
-                </a>
+                {contacts.map((contact, index) => (
+                  <a
+                    key={`summer-top-call-${contact.tel}`}
+                    href={`tel:${contact.tel}`}
+                    onClick={() =>
+                      trackCallIntent({
+                        season: "summer",
+                        contact: contact.name,
+                        surface: "summer_top",
+                      })
+                    }
+                    className={`inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl px-4 text-[17px] font-bold ${
+                      index === 0 ? "bg-accent text-primary" : "border border-primary/30 text-primary"
+                    }`}
+                  >
+                    <PhoneCall className="h-5 w-5" />
+                    {contact.name} - {PRIMARY_CALL_COPY}
+                  </a>
+                ))}
               </div>
+
+              <p className="text-[15px] text-muted-foreground">{"\uD1B5\uD654 \uAC00\uB2A5 09:00~21:00 / \uBD80\uC7AC \uC2DC \uBB38\uC758 \uB0A8\uAE30\uAE30"}</p>
+              <Link
+                to="/#final-call"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-primary/30 px-4 text-[16px] font-semibold text-primary"
+              >
+                {"\uBB38\uC758 \uB0A8\uAE30\uAE30"}
+              </Link>
             </div>
           </div>
         </section>
@@ -255,13 +271,21 @@ const SummerItinerary = () => {
                 <a
                   key={contact.tel}
                   href={`tel:${contact.tel}`}
+                  onClick={() =>
+                    trackCallIntent({
+                      season: "summer",
+                      contact: contact.name,
+                      surface: "summer_final",
+                    })
+                  }
                   className="inline-flex min-h-[52px] items-center justify-between rounded-xl bg-white px-4 text-[17px] font-bold text-primary"
                 >
-                  <span>{contact.role}</span>
+                  <span>{contact.name} - {PRIMARY_CALL_COPY}</span>
                   <span>{contact.phone}</span>
                 </a>
               ))}
             </div>
+            <p className="mt-2 text-[15px] text-white/85">{"\uD1B5\uD654 \uAC00\uB2A5 09:00~21:00 / \uBD80\uC7AC \uC2DC \uBB38\uC758 \uB0A8\uAE30\uAE30"}</p>
 
             <Link
               to="/"

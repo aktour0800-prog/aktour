@@ -2,7 +2,7 @@
 import { Lock, LogOut, RefreshCw, Save, Trash2 } from "lucide-react";
 
 type AuthStatus = "checking" | "guest" | "authenticated";
-type EventType = "waitlist" | "like" | "inquiry";
+type EventType = "waitlist" | "like" | "inquiry" | "call_intent";
 type SeasonType = "spring" | "summer" | "fall" | "winter";
 type FollowUpStatus = "new" | "called" | "no_answer" | "inquiry_left" | "closed";
 
@@ -42,6 +42,7 @@ const eventLabel: Record<EventType, string> = {
   waitlist: "대기 신청",
   like: "좋아요",
   inquiry: "문의 남김",
+  call_intent: "전화 의도",
 };
 
 const followUpLabel: Record<FollowUpStatus, string> = {
@@ -150,6 +151,11 @@ const Admin = () => {
 
   const inquiryCount = useMemo(
     () => summary.filter((row) => row.event_type === "inquiry").reduce((sum, row) => sum + Number(row.count || 0), 0),
+    [summary],
+  );
+
+  const callIntentCount = useMemo(
+    () => summary.filter((row) => row.event_type === "call_intent").reduce((sum, row) => sum + Number(row.count || 0), 0),
     [summary],
   );
 
@@ -346,7 +352,7 @@ const Admin = () => {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h1 className="text-[28px] font-bold">AlaskaTrip Admin</h1>
-              <p className="text-[16px] text-muted-foreground">대기 신청/좋아요/문의 리드 관리</p>
+              <p className="text-[16px] text-muted-foreground">{"\uB300\uAE30 \uC2E0\uCCAD/\uC88B\uC544\uC694/\uBB38\uC758/\uC804\uD654 \uC758\uB3C4 \uB9AC\uB4DC \uAD00\uB9AC"}</p>
             </div>
 
             <div className="flex gap-2">
@@ -371,7 +377,7 @@ const Admin = () => {
             </div>
           </div>
 
-          <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
             <div className="rounded-2xl border bg-secondary p-4">
               <p className="text-[16px] text-muted-foreground">전체 리드</p>
               <p className="text-[28px] font-bold">{items.length}</p>
@@ -387,6 +393,10 @@ const Admin = () => {
             <div className="rounded-2xl border bg-secondary p-4">
               <p className="text-[16px] text-muted-foreground">문의 남김</p>
               <p className="text-[28px] font-bold">{inquiryCount}</p>
+            </div>
+            <div className="rounded-2xl border bg-secondary p-4">
+              <p className="text-[16px] text-muted-foreground">전화 의도</p>
+              <p className="text-[28px] font-bold">{callIntentCount}</p>
             </div>
           </div>
 
@@ -503,3 +513,5 @@ const Admin = () => {
 };
 
 export default Admin;
+
+

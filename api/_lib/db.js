@@ -84,7 +84,7 @@ export const ensureSchema = async () => {
         ) THEN
           ALTER TABLE lead_events
           ADD CONSTRAINT lead_events_event_type_check
-          CHECK (event_type IN ('waitlist', 'like', 'inquiry'));
+          CHECK (event_type IN ('waitlist', 'like', 'inquiry', 'call_intent'));
         END IF;
       END $$;
     `);
@@ -122,3 +122,4 @@ export const ensureSchema = async () => {
     client.release();
   }
 };
+

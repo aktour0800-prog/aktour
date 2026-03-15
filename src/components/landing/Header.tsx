@@ -1,7 +1,8 @@
-import { CalendarDays, Phone } from "lucide-react";
+﻿import { CalendarDays, Phone } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import { contacts } from "@/data/summerCampaignData";
+import { trackCallIntent } from "@/lib/callIntent";
 
 interface HeaderProps {
   hidden?: boolean;
@@ -26,11 +27,18 @@ const Header = ({ hidden = false }: HeaderProps) => {
         <div className="flex shrink-0 items-center gap-2">
           <a
             href={`tel:${contacts[0].tel}`}
+            onClick={() =>
+              trackCallIntent({
+                season: "summer",
+                contact: contacts[0].name,
+                surface: "header",
+              })
+            }
             className="inline-flex min-h-[48px] items-center gap-1.5 whitespace-nowrap rounded-xl border border-white/45 bg-white/14 px-3 text-[16px] font-semibold text-white"
             aria-label={`${contacts[0].name} 전화 연결`}
           >
             <Phone className="h-4 w-4" />
-            전화상담
+            지금 좌석 확인 전화
           </a>
           <Link
             to={isSummerPage ? "/" : "/summer-itinerary"}

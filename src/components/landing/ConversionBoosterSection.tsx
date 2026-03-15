@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { contacts, seasonLeadOptions, summerCampaignClock } from "@/data/summerCampaignData";
+import { trackCallIntent } from "@/lib/callIntent";
 
 type WaitlistSeasonKey = "spring" | "fall" | "winter";
 
@@ -342,13 +343,20 @@ const ConversionBoosterSection = () => {
               className="cta-pulse inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
             >
               <PhoneCall className="h-5 w-5" />
-              여름 좌석 바로 확인
+              {"\uC9C0\uAE08 \uC88C\uC11D \uD655\uC778 \uC804\uD654"}
             </button>
             <a
               href={`tel:${contacts[1].tel}`}
+              onClick={() =>
+                trackCallIntent({
+                  season: "summer",
+                  contact: contacts[1].name,
+                  surface: "seat_sheet",
+                })
+              }
               className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-white/35 px-4 text-[16px] font-semibold text-white"
             >
-              일정 담당 빠른 연결
+              {"\uC9C0\uAE08 \uC88C\uC11D \uD655\uC778 \uC804\uD654"}
             </a>
           </div>
         </div>
@@ -528,6 +536,13 @@ const ConversionBoosterSection = () => {
                 <a
                   key={`seat-call-${contact.tel}`}
                   href={`tel:${contact.tel}`}
+                  onClick={() =>
+                    trackCallIntent({
+                      season: "summer",
+                      contact: contact.name,
+                      surface: "seat_sheet",
+                    })
+                  }
                   className="inline-flex min-h-[52px] items-center justify-between rounded-xl bg-primary px-4 text-[17px] font-bold text-white"
                 >
                   <span>{contact.name}</span>
@@ -598,10 +613,17 @@ const ConversionBoosterSection = () => {
               {waitlistFeedback.type === "success" ? (
                 <a
                   href={`tel:${contacts[1].tel}`}
+                  onClick={() =>
+                    trackCallIntent({
+                      season: waitlistTarget ?? "fall",
+                      contact: contacts[1].name,
+                      surface: "season_card",
+                    })
+                  }
                   className="inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
                 >
                   <PhoneCall className="h-5 w-5" />
-                  담당자와 바로 통화
+                  {"\uC9C0\uAE08 \uC88C\uC11D \uD655\uC778 \uC804\uD654"}
                 </a>
               ) : null}
             </div>

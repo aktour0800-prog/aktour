@@ -1,10 +1,9 @@
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+﻿import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowDown,
   ArrowLeftRight,
   ArrowRight,
-  CalendarDays,
   ChevronLeft,
   ChevronRight,
   MessageSquareText,
@@ -18,10 +17,13 @@ import Footer from "@/components/landing/Footer";
 import FloatingCallButton from "@/components/landing/FloatingCallButton";
 import ConversionBoosterSection from "@/components/landing/ConversionBoosterSection";
 import SeoHead from "@/components/seo/SeoHead";
+import { trackCallIntent } from "@/lib/callIntent";
 import {
   contacts,
   dayPlans,
+  excludes,
   faqItems,
+  includes,
   seasonCards,
   seasonGalleryGroups,
   storyCards,
@@ -36,6 +38,7 @@ import {
 const HERO_INTRO_MS = 2000;
 const HERO_ACTION_DELAY_MS = 980;
 const HERO_CYCLE_MS = 7600;
+const PRIMARY_CALL_COPY = "\uC9C0\uAE08 \uC88C\uC11D \uD655\uC778 \uC804\uD654";
 
 type HeroPhase = "intro" | "copy" | "actions";
 
@@ -76,6 +79,24 @@ const Index = () => {
   const shortsIndexRef = useRef(0);
 
   const heroImages = ["/alaska-mobile/hero-1.webp", "/alaska-mobile/hero-2.webp", "/alaska-mobile/hero-3.webp"];
+  const responsiveHeroImages = new Set([
+    "/alaska-mobile/hero-1.webp",
+    "/alaska-mobile/hero-2.webp",
+    "/alaska-mobile/hero-3.webp",
+    "/alaska-mobile/story-1.webp",
+    "/alaska-mobile/story-2.webp",
+    "/alaska-mobile/story-3.webp",
+    "/alaska-mobile/story-4.webp",
+  ]);
+
+  const getResponsiveSrcSet = (src: string) => {
+    if (!responsiveHeroImages.has(src) || !src.endsWith(".webp")) {
+      return undefined;
+    }
+
+    const base = src.slice(0, -5);
+    return `${base}-960.webp 960w, ${base}-1440.webp 1440w, ${src} 1920w`;
+  };
   const isHeroIntro = heroPhase === "intro";
   const showHeroCopy = heroPhase !== "intro";
   const showHeroActions = heroPhase === "actions";
@@ -529,6 +550,8 @@ const Index = () => {
               src={src}
               alt="알래스카 대표 풍경"
               loading={index === 0 ? "eager" : "lazy"}
+              srcSet={getResponsiveSrcSet(src)}
+              sizes="100vw"
               className={`absolute inset-0 h-full w-full transform-gpu object-cover transition-opacity [transition-duration:1300ms] ease-out ${
                 heroIndex === index ? "opacity-100" : "opacity-0"
               } ${index === 0 && isHeroIntro && !prefersReducedMotion ? "hero-kenburns-intro" : ""}`}
@@ -585,18 +608,113 @@ const Index = () => {
                   className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-[#e2b855] bg-accent px-4 text-[17px] font-bold text-primary shadow-[0_10px_24px_-18px_rgba(214,161,53,0.95)]"
                 >
                   <PhoneCall className="h-5 w-5" />
-                  상담 전화하기
+                  {PRIMARY_CALL_COPY}
                 </button>
-                <Link
-                  to="/summer-itinerary"
+                <button
+                  type="button"
+                  onClick={openInquiryModal}
                   className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-white/65 bg-[rgba(5,17,34,0.24)] px-4 text-[17px] font-semibold text-white"
                 >
-                  알래스카 여행 일정
-                  <ArrowRight className="h-5 w-5" />
-                </Link>
+                  <MessageSquareText className="h-5 w-5" />
+                  {"\uBB38\uC758 \uB0A8\uAE30\uAE30"}
+                </button>
               </div>
+              <p className="text-[15px] text-white/80">{"\uD1B5\uD654 \uAC00\uB2A5 09:00~21:00 / \uC5F0\uACB0\uC774 \uC5B4\uB824\uC6B0\uBA74 \uBB38\uC758 \uB0A8\uAE30\uAE30"}</p>
             </div>
           </div>
+        </section>
+
+        <section id="wow-points" className="mx-auto mt-10 w-full max-w-5xl px-4">
+          <div className="mb-4 flex items-end justify-between gap-4">
+            <h2 className="font-brand text-[30px] font-semibold leading-tight">핵심 장면 3개</h2>
+            <p className="text-[16px] text-muted-foreground">사진 먼저, 상담은 한 번에</p>
+          </div>
+
+          <div className="grid gap-3">
+            {wowPoints.slice(0, 3).map((point) => (
+              <article key={point.badge} className="wow-glow-card">
+                <button type="button" onClick={() => openImageViewer(point.image, point.title)} className="block w-full">
+                  <img src={point.image} alt={point.title} loading="lazy" className="h-56 w-full object-cover" />
+                </button>
+                <div className="space-y-2 p-5">
+                  <p className="wow-ribbon">{point.badge}</p>
+                  <h3 className="text-[24px] font-semibold leading-tight">{point.title}</h3>
+                  <p className="text-[16px] text-foreground/80">{point.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="summer-offer" className="mx-auto mt-10 w-full max-w-5xl px-4">
+          <div className="rounded-3xl border bg-primary px-5 py-6 text-white shadow-elegant">
+            <p className="text-[16px] text-white/80">{"\uC5EC\uB984 \uD655\uC815 \uC624\uD37C"}</p>
+            <h2 className="mt-1 font-brand text-[31px] font-semibold leading-tight">{summerSummary.title}</h2>
+            <p className="mt-3 text-[17px] font-semibold text-accent">{summerSummary.period}</p>
+            <p className="mt-1 text-[23px] font-bold">{summerSummary.price}</p>
+            <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <a
+                href={`tel:${contacts[0].tel}`}
+                onClick={() =>
+                  trackCallIntent({
+                    season: "summer",
+                    contact: contacts[0].name,
+                    surface: "hero",
+                  })
+                }
+                className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[17px] font-bold text-primary"
+              >
+                <PhoneCall className="h-5 w-5" />
+                {contacts[0].name} - {PRIMARY_CALL_COPY}
+              </a>
+              <a
+                href={`tel:${contacts[1].tel}`}
+                onClick={() =>
+                  trackCallIntent({
+                    season: "summer",
+                    contact: contacts[1].name,
+                    surface: "hero",
+                  })
+                }
+                className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-white/40 px-4 text-[17px] font-semibold"
+              >
+                <PhoneCall className="h-5 w-5" />
+                {contacts[1].name} - {PRIMARY_CALL_COPY}
+              </a>
+            </div>
+            <p className="mt-3 text-[15px] text-white/85">{"\uD1B5\uD654 \uAC00\uB2A5 09:00~21:00 / \uBD80\uC7AC \uC2DC \uBB38\uC758 \uB0A8\uAE30\uAE30 \uAC00\uB2A5"}</p>
+          </div>
+        </section>
+
+        <section className="mx-auto mt-8 w-full max-w-5xl px-4">
+          <article className="rounded-3xl border bg-white p-5 shadow-card">
+            <div className="flex items-end justify-between gap-3">
+              <h2 className="text-[25px] font-semibold leading-tight">{"\uD575\uC2EC \uD3EC\uD568/\uBD88\uD3EC\uD568 \uC694\uC57D"}</h2>
+              <Link to="/summer-itinerary" className="text-[16px] font-semibold text-primary underline-offset-4 hover:underline">
+                {"\uC0C1\uC138 \uC804\uCCB4 \uBCF4\uAE30"}
+              </Link>
+            </div>
+
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-2xl border bg-secondary/35 p-4">
+                <p className="text-[16px] font-semibold text-primary">{"\uD3EC\uD568 \uD575\uC2EC 3\uAC00\uC9C0"}</p>
+                <ul className="mt-2 space-y-1 text-[16px] text-foreground/85">
+                  {includes.slice(0, 3).map((item) => (
+                    <li key={`landing-include-${item}`}>- {item}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded-2xl border bg-secondary/35 p-4">
+                <p className="text-[16px] font-semibold text-primary">{"\uBD88\uD3EC\uD568 \uD575\uC2EC 3\uAC00\uC9C0"}</p>
+                <ul className="mt-2 space-y-1 text-[16px] text-foreground/85">
+                  {excludes.slice(0, 3).map((item) => (
+                    <li key={`landing-exclude-${item}`}>- {item}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </article>
         </section>
 
         <section className="mx-auto mt-6 grid w-full max-w-5xl gap-3 px-4">
@@ -626,11 +744,24 @@ const Index = () => {
                 className="min-w-[84%] snap-center overflow-hidden rounded-3xl border bg-white shadow-card sm:min-w-[46%]"
               >
                 <button type="button" onClick={() => openImageViewer(story.image, story.title)} className="block w-full">
-                  <img src={story.image} alt={story.title} loading="lazy" className="h-56 w-full object-cover" />
+                  <img src={story.image} alt={story.title} loading="lazy" srcSet={getResponsiveSrcSet(story.image)} sizes="(max-width: 640px) 84vw, 46vw" className="h-56 w-full object-cover" />
                 </button>
                 <div className="space-y-1 px-4 py-4">
                   <h3 className="text-[23px] font-semibold leading-tight">{story.title}</h3>
                   <p className="text-[16px] text-foreground/80">{story.subtitle}</p>
+                  <a
+                    href={`tel:${contacts[0].tel}`}
+                    onClick={() =>
+                      trackCallIntent({
+                        season: "summer",
+                        contact: contacts[0].name,
+                        surface: "gallery",
+                      })
+                    }
+                    className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-primary px-4 text-[16px] font-semibold text-white"
+                  >
+                    {PRIMARY_CALL_COPY}
+                  </a>
                 </div>
               </article>
             ))}
@@ -773,69 +904,28 @@ const Index = () => {
           </p>
 
           <div className="mt-4 rounded-2xl border bg-white p-4 shadow-card">
-            <p className="text-[16px] text-foreground/80">원하는 장면을 충분히 보셨다면, 지금 가능한 좌석부터 먼저 확인해보세요.</p>
+            <p className="text-[16px] text-foreground/80">{"\uC6D0\uD558\uB294 \uC7A5\uBA74\uC744 \uCDA9\uBD84\uD788 \uBCF4\uC168\uB2E4\uBA74, \uC9C0\uAE08 \uAC00\uB2A5\uD55C \uC88C\uC11D\uBD80\uD130 \uBA3C\uC800 \uD655\uC778\uD574\uBCF4\uC138\uC694."}</p>
+            <p className="mt-1 text-[15px] text-muted-foreground">{"\uD1B5\uD654 \uAC00\uB2A5 09:00~21:00 / \uC5F0\uACB0 \uC5B4\uB824\uC6B0\uBA74 \uBB38\uC758 \uB0A8\uAE30\uAE30"}</p>
             <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <a
-                href={`tel:${contacts[0].tel}`}
-                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-primary px-4 text-[16px] font-semibold text-white"
-              >
-                <PhoneCall className="h-4 w-4" />
-                엄태인 대표 연결
-              </a>
-              <a
-                href={`tel:${contacts[1].tel}`}
-                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
-              >
-                <PhoneCall className="h-4 w-4" />
-                정수미 대표 연결
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <section id="wow-points" className="mx-auto mt-10 w-full max-w-5xl px-4">
-          <div className="mb-4 flex items-end justify-between gap-4">
-            <h2 className="font-brand text-[30px] font-semibold leading-tight">결정을 당기는 하이라이트</h2>
-            <p className="text-[16px] text-muted-foreground">상담 전환이 높은 장면만 추렸습니다</p>
-          </div>
-
-          <div className="grid gap-3">
-            {wowPoints.map((point) => (
-              <article key={point.badge} className="wow-glow-card">
-                <button type="button" onClick={() => openImageViewer(point.image, point.title)} className="block w-full">
-                  <img src={point.image} alt={point.title} loading="lazy" className="h-56 w-full object-cover" />
-                </button>
-                <div className="space-y-2 p-5">
-                  <p className="wow-ribbon">{point.badge}</p>
-                  <h3 className="text-[24px] font-semibold leading-tight">{point.title}</h3>
-                  <p className="text-[16px] text-foreground/80">{point.description}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section id="summer-offer" className="mx-auto mt-10 w-full max-w-5xl px-4">
-          <div className="rounded-3xl border bg-primary px-5 py-6 text-white shadow-elegant">
-            <p className="text-[16px] text-white/80">확정 상품</p>
-            <h2 className="mt-1 font-brand text-[31px] font-semibold leading-tight">{summerSummary.title}</h2>
-            <p className="mt-3 text-[17px] font-semibold text-accent">{summerSummary.period}</p>
-            <p className="mt-1 text-[23px] font-bold">{summerSummary.price}</p>
-            <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <a
-                href={`tel:${contacts[0].tel}`}
-                className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[17px] font-bold text-primary"
-              >
-                <PhoneCall className="h-5 w-5" />
-                {"\uC5C4\uD0DC\uC778 \uB300\uD45C \uC0C1\uB2F4"}
-              </a>
-              <a
-                href={`tel:${contacts[1].tel}`}
-                className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-white/40 px-4 text-[17px] font-semibold"
-              >
-                <PhoneCall className="h-5 w-5" />
-                {"\uC815\uC218\uBBF8 \uB300\uD45C \uC0C1\uB2F4"}
-              </a>
+              {contacts.map((contact, index) => (
+                <a
+                  key={`gallery-call-${contact.tel}`}
+                  href={`tel:${contact.tel}`}
+                  onClick={() =>
+                    trackCallIntent({
+                      season: activeSeason,
+                      contact: contact.name,
+                      surface: "gallery",
+                    })
+                  }
+                  className={`inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-4 text-[16px] font-bold ${
+                    index === 0 ? "bg-primary text-white" : "bg-accent text-primary"
+                  }`}
+                >
+                  <PhoneCall className="h-4 w-4" />
+                  {contact.name} - {PRIMARY_CALL_COPY}
+                </a>
+              ))}
             </div>
           </div>
         </section>
@@ -874,9 +964,16 @@ const Index = () => {
                   ) : (
                     <a
                       href={`tel:${contacts[0].tel}`}
+                      onClick={() =>
+                        trackCallIntent({
+                          season: season.key,
+                          contact: contacts[0].name,
+                          surface: "season_card",
+                        })
+                      }
                       className="inline-flex min-h-[48px] items-center rounded-xl border border-primary/30 px-4 text-[16px] font-semibold text-primary"
                     >
-                      오픈 알림 상담
+                      {PRIMARY_CALL_COPY}
                     </a>
                   )}
                 </div>
@@ -899,20 +996,37 @@ const Index = () => {
 
         <section id="final-call" className="mx-auto mt-10 w-full max-w-5xl px-4">
           <div className="rounded-3xl border bg-secondary px-5 py-6">
-            <h2 className="font-brand text-[30px] font-semibold leading-tight">전화 한 통으로 상담 시작</h2>
-            <p className="mt-2 text-[16px] text-foreground/80">짧게 물어보셔도 됩니다. 가능한 일정과 항공을 바로 확인해드립니다.</p>
+            <h2 className="font-brand text-[30px] font-semibold leading-tight">{PRIMARY_CALL_COPY}</h2>
+            <p className="mt-2 text-[16px] text-foreground/80">{"\uC9E7\uAC8C \uBB3C\uC5B4\uBCF4\uC154\uB3C4 \uB429\uB2C8\uB2E4. \uAC00\uB2A5\uD55C \uC77C\uC815\uACFC \uD56D\uACF5\uC744 \uBC14\uB85C \uD655\uC778\uD574\uB4DC\uB9BD\uB2C8\uB2E4."}</p>
+            <p className="mt-1 text-[15px] text-muted-foreground">{"\uD1B5\uD654 \uAC00\uB2A5 09:00~21:00 / \uBD80\uC7AC \uC2DC \uBB38\uC758 \uB0A8\uAE30\uAE30"}</p>
             <div className="mt-5 grid gap-2">
               {contacts.map((contact) => (
                 <a
                   key={contact.tel}
                   href={`tel:${contact.tel}`}
+                  onClick={() =>
+                    trackCallIntent({
+                      season: "summer",
+                      contact: contact.name,
+                      surface: "final",
+                    })
+                  }
                   className="inline-flex min-h-[52px] items-center justify-between rounded-xl bg-white px-4 text-[17px] font-bold text-primary shadow-card"
                 >
-                  <span>{contact.role}</span>
+                  <span>{contact.name} - {PRIMARY_CALL_COPY}</span>
                   <span>{contact.phone}</span>
                 </a>
               ))}
             </div>
+
+            <button
+              type="button"
+              onClick={openInquiryModal}
+              className="mt-3 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border border-primary/30 bg-white px-4 text-[16px] font-semibold text-primary"
+            >
+              <MessageSquareText className="h-5 w-5" />
+              {"\uBB38\uC758 \uB0A8\uAE30\uAE30"}
+            </button>
           </div>
         </section>
       </main>
@@ -940,9 +1054,16 @@ const Index = () => {
                 <a
                   key={`hero-call-${contact.tel}`}
                   href={`tel:${contact.tel}`}
+                  onClick={() =>
+                    trackCallIntent({
+                      season: "summer",
+                      contact: contact.name,
+                      surface: "hero",
+                    })
+                  }
                   className="inline-flex min-h-[52px] items-center justify-between rounded-xl bg-primary px-4 text-[17px] font-bold text-white"
                 >
-                  <span>{contact.name}</span>
+                  <span>{contact.name} - {PRIMARY_CALL_COPY}</span>
                   <span>{contact.phone}</span>
                 </a>
               ))}
@@ -1190,14 +1311,14 @@ const Index = () => {
                         onClick={() => setSelectedPhotoId(null)}
                         className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/40 bg-black/30 px-4 text-[16px] font-semibold text-white"
                       >
-                        갤러리로 돌아가기
+                        {"\uAC24\uB7EC\uB9AC\uB85C \uB3CC\uC544\uAC00\uAE30"}
                       </button>
                       <Link
                         to="/summer-itinerary"
                         onClick={() => setSelectedPhotoId(null)}
                         className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
                       >
-                        여름 확정 일정 보기
+                        {"\uC5EC\uB984 \uD655\uC815 \uC77C\uC815 \uBCF4\uAE30"}
                         <ArrowRight className="h-4 w-4" />
                       </Link>
                     </div>
@@ -1208,25 +1329,30 @@ const Index = () => {
 
             <article className="shorts-frame relative flex h-[100svh] snap-start items-end overflow-hidden bg-[radial-gradient(circle_at_20%_20%,#1f3f66,transparent_45%),radial-gradient(circle_at_85%_75%,#cf9f45,transparent_35%),#0b1420]">
               <div className="mx-auto w-full max-w-3xl space-y-4 px-4 pb-[calc(env(safe-area-inset-bottom)+26px)]">
-                <p className="wow-ribbon">마지막 장면</p>
-                <h3 className="font-brand text-[33px] font-semibold leading-tight text-white">끝까지 보셨습니다. 지금 전화로 자리부터 확인하세요.</h3>
-                <p className="text-[16px] text-white/85">출발 가능 좌석과 항공을 실시간으로 확인해드리겠습니다.</p>
+                <p className="wow-ribbon">{"\uB9C8\uC9C0\uB9C9 \uC7A5\uBA74"}</p>
+                <h3 className="font-brand text-[33px] font-semibold leading-tight text-white">{"\uB05D\uAE4C\uC9C0 \uBCF4\uC168\uC2B5\uB2C8\uB2E4. \uC9C0\uAE08 \uC804\uD654\uB85C \uC790\uB9AC\uBD80\uD130 \uD655\uC778\uD558\uC138\uC694."}</h3>
+                <p className="text-[16px] text-white/85">{"\uCD9C\uBC1C \uAC00\uB2A5 \uC88C\uC11D\uACFC \uD56D\uACF5\uC744 \uC2E4\uC2DC\uAC04\uC73C\uB85C \uD655\uC778\uD574\uB4DC\uB9AC\uACA0\uC2B5\uB2C8\uB2E4."}</p>
 
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  <a
-                    href={`tel:${contacts[0].tel}`}
-                    className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-white px-4 text-[16px] font-bold text-primary"
-                  >
-                    <PhoneCall className="h-5 w-5" />
-                    엄태인 대표 연결
-                  </a>
-                  <a
-                    href={`tel:${contacts[1].tel}`}
-                    className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
-                  >
-                    <PhoneCall className="h-5 w-5" />
-                    정수미 대표 연결
-                  </a>
+                  {contacts.map((contact, index) => (
+                    <a
+                      key={`shorts-final-call-${contact.tel}`}
+                      href={`tel:${contact.tel}`}
+                      onClick={() =>
+                        trackCallIntent({
+                          season: activeSeason,
+                          contact: contact.name,
+                          surface: "final",
+                        })
+                      }
+                      className={`inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl px-4 text-[16px] font-bold ${
+                        index === 0 ? "bg-white text-primary" : "bg-accent text-primary"
+                      }`}
+                    >
+                      <PhoneCall className="h-5 w-5" />
+                      {contact.name} - {PRIMARY_CALL_COPY}
+                    </a>
+                  ))}
                 </div>
 
                 <button
@@ -1234,7 +1360,7 @@ const Index = () => {
                   onClick={() => setSelectedPhotoId(null)}
                   className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/40 px-4 text-[16px] font-semibold text-white"
                 >
-                  숏폼 닫고 홈페이지 계속 보기
+                  {"\uC20F\uD3FC \uB2EB\uACE0 \uD648\uD398\uC774\uC9C0 \uACC4\uC18D \uBCF4\uAE30"}
                 </button>
               </div>
             </article>
@@ -1271,3 +1397,5 @@ const Index = () => {
 };
 
 export default Index;
+
+
