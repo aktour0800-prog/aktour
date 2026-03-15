@@ -7,6 +7,7 @@ import Footer from "@/components/landing/Footer";
 import FloatingCallButton from "@/components/landing/FloatingCallButton";
 import SeoHead from "@/components/seo/SeoHead";
 import { trackCallIntent } from "@/lib/callIntent";
+import useRevealOnScroll from "@/hooks/useRevealOnScroll";
 import {
   contacts,
   dayPlans,
@@ -21,6 +22,8 @@ const PRIMARY_CALL_COPY = "\uC9C0\uAE08 \uC88C\uC11D \uD655\uC778 \uC804\uD654";
 const SummerItinerary = () => {
   const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null);
   const [headerHidden, setHeaderHidden] = useState(false);
+
+  useRevealOnScroll();
   const jsonLd = useMemo(
     () => [
       {
@@ -107,8 +110,8 @@ const SummerItinerary = () => {
 
       <Header hidden={headerHidden} />
 
-      <main className="pb-28 pt-24">
-        <section className="mx-auto w-full max-w-5xl px-4">
+      <main className="pb-[calc(env(safe-area-inset-bottom)+7.25rem)] pt-24">
+        <section data-reveal className="mx-auto w-full max-w-5xl px-4">
           <div className="overflow-hidden rounded-3xl border bg-white shadow-card">
             <button
               type="button"
@@ -141,7 +144,7 @@ const SummerItinerary = () => {
                         surface: "summer_top",
                       })
                     }
-                    className={`inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl px-4 text-[17px] font-bold ${
+                    className={`cta-premium inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl px-4 text-[17px] font-bold ${
                       index === 0 ? "bg-accent text-primary" : "border border-primary/30 text-primary"
                     }`}
                   >
@@ -162,7 +165,7 @@ const SummerItinerary = () => {
           </div>
         </section>
 
-        <section className="mx-auto mt-6 grid w-full max-w-5xl gap-4 px-4 md:grid-cols-2">
+        <section data-reveal className="mx-auto mt-6 grid w-full max-w-5xl gap-4 px-4 md:grid-cols-2">
           <article className="rounded-2xl border bg-white p-5 shadow-card">
             <h2 className="mb-3 flex items-center gap-2 text-[22px] font-bold">
               <ShieldCheck className="h-6 w-6 text-primary" />
@@ -194,7 +197,7 @@ const SummerItinerary = () => {
           </article>
         </section>
 
-        <section className="mx-auto mt-8 w-full max-w-5xl px-4">
+        <section data-reveal className="mx-auto mt-8 w-full max-w-5xl px-4">
           <h2 className="mb-4 text-[28px] font-bold">Day1 ~ Day9 상세 일정</h2>
           <div className="space-y-5">
             {dayPlans.map((day) => (
@@ -250,7 +253,7 @@ const SummerItinerary = () => {
           </div>
         </section>
 
-        <section className="mx-auto mt-8 w-full max-w-5xl px-4">
+        <section data-reveal className="mx-auto mt-8 w-full max-w-5xl px-4">
           <h2 className="mb-4 text-[28px] font-bold">여름 시즌 FAQ</h2>
           <div className="space-y-3">
             {faqItems.map((faq) => (
@@ -262,7 +265,7 @@ const SummerItinerary = () => {
           </div>
         </section>
 
-        <section className="mx-auto mt-10 w-full max-w-5xl px-4">
+        <section data-reveal className="mx-auto mt-10 w-full max-w-5xl px-4">
           <div className="rounded-3xl border bg-primary px-5 py-6 text-white">
             <h2 className="text-[28px] font-bold leading-tight">일정이 맞는지 지금 확인해보세요</h2>
             <p className="mt-2 text-[16px] text-white/85">상담 시 항공 좌석/출발 가능 여부를 바로 확인해드립니다.</p>
@@ -278,7 +281,7 @@ const SummerItinerary = () => {
                       surface: "summer_final",
                     })
                   }
-                  className="inline-flex min-h-[52px] items-center justify-between rounded-xl bg-white px-4 text-[17px] font-bold text-primary"
+                  className="cta-premium cta-premium-primary inline-flex min-h-[52px] items-center justify-between rounded-xl bg-white px-4 text-[17px] font-bold text-primary"
                 >
                   <span>{contact.name} - {PRIMARY_CALL_COPY}</span>
                   <span>{contact.phone}</span>

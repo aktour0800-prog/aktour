@@ -18,6 +18,7 @@ import FloatingCallButton from "@/components/landing/FloatingCallButton";
 import ConversionBoosterSection from "@/components/landing/ConversionBoosterSection";
 import SeoHead from "@/components/seo/SeoHead";
 import { trackCallIntent } from "@/lib/callIntent";
+import useRevealOnScroll from "@/hooks/useRevealOnScroll";
 import {
   contacts,
   dayPlans,
@@ -35,8 +36,9 @@ import {
   type SeasonGalleryPhoto,
 } from "@/data/summerCampaignData";
 
-const HERO_INTRO_MS = 2000;
-const HERO_ACTION_DELAY_MS = 980;
+const HERO_INTRO_MS = 3000;
+const HERO_ACTION_DELAY_MS = 880;
+const HERO_INTRO_CYCLE_MS = 950;
 const HERO_CYCLE_MS = 7600;
 const PRIMARY_CALL_COPY = "\uC9C0\uAE08 \uC88C\uC11D \uD655\uC778 \uC804\uD654";
 
@@ -73,6 +75,8 @@ const Index = () => {
   const [inquiryMessage, setInquiryMessage] = useState("");
   const [isSubmittingInquiry, setIsSubmittingInquiry] = useState(false);
   const [inquiryFeedback, setInquiryFeedback] = useState<InquiryFeedback>({ type: "idle", message: "" });
+
+  useRevealOnScroll();
 
   const shortsFeedRef = useRef<HTMLDivElement | null>(null);
   const shortsRowRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -299,6 +303,18 @@ const Index = () => {
       window.clearTimeout(actionTimer);
     };
   }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    if (!isHeroIntro || prefersReducedMotion) {
+      return;
+    }
+
+    const introSlider = window.setInterval(() => {
+      setHeroIndex((prev) => (prev + 1) % heroImages.length);
+    }, HERO_INTRO_CYCLE_MS);
+
+    return () => window.clearInterval(introSlider);
+  }, [heroImages.length, isHeroIntro, prefersReducedMotion]);
 
   useEffect(() => {
     if (isHeroIntro || prefersReducedMotion) {
@@ -542,7 +558,7 @@ const Index = () => {
 
       {showHeroActions ? <Header hidden={headerHidden} /> : null}
 
-      <main className="pb-28">
+      <main className="pb-[calc(env(safe-area-inset-bottom)+7.25rem)]">
         <section className="relative min-h-[100svh] overflow-hidden">
           {heroImages.map((src, index) => (
             <img
@@ -554,7 +570,7 @@ const Index = () => {
               sizes="100vw"
               className={`absolute inset-0 h-full w-full transform-gpu object-cover transition-opacity [transition-duration:1300ms] ease-out ${
                 heroIndex === index ? "opacity-100" : "opacity-0"
-              } ${index === 0 && isHeroIntro && !prefersReducedMotion ? "hero-kenburns-intro" : ""}`}
+              } ${isHeroIntro && heroIndex === index && !prefersReducedMotion ? "hero-kenburns-intro" : ""}`}
             />
           ))}
 
@@ -571,18 +587,18 @@ const Index = () => {
             style={{ background: "var(--gradient-hero-vignette)" }}
           />
 
-          <div className="relative mx-auto flex min-h-[100svh] w-full max-w-5xl flex-col justify-end px-4 pb-16 pt-24">
-            <div className="max-w-lg space-y-3 rounded-[30px] border border-white/20 bg-[linear-gradient(145deg,rgba(5,20,41,0.34),rgba(5,20,41,0.16)_58%,rgba(255,255,255,0.06))] px-4 py-5 shadow-[0_20px_48px_-34px_rgba(3,12,27,0.95)] backdrop-blur-[2px] sm:px-6 sm:py-6">
+          <div className="relative mx-auto flex min-h-[100svh] w-full max-w-5xl flex-col justify-end px-4 pb-[calc(env(safe-area-inset-bottom)+7.25rem)] pt-24 sm:pb-20">
+            <div className="hero-cinematic-card max-w-lg space-y-3 rounded-[30px] border border-white/20 bg-[linear-gradient(145deg,rgba(5,20,41,0.34),rgba(5,20,41,0.16)_58%,rgba(255,255,255,0.06))] px-4 py-5 shadow-[0_20px_48px_-34px_rgba(3,12,27,0.95)] backdrop-blur-[2px] sm:px-6 sm:py-6">
               <p
                 className={`inline-flex rounded-full border border-white/35 bg-[rgba(10,28,54,0.4)] px-3 py-1 text-[16px] font-semibold text-white transition-all [transition-duration:1200ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
-                  showHeroCopy ? "translate-y-0 opacity-100 blur-0" : "translate-y-4 opacity-0 blur-[2px]"
+                  showHeroCopy ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
                 }`}
               >
                 도시어부 촬영지 · 12명 프리미엄 소그룹
               </p>
               <h1
-                className={`font-brand text-[36px] font-semibold leading-[1.22] tracking-[-0.01em] text-white transition-all [transition-duration:1400ms] [transition-delay:120ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] sm:text-[42px] ${
-                  showHeroCopy ? "translate-y-0 opacity-100 blur-0" : "translate-y-5 opacity-0 blur-[3px]"
+                className={`font-brand text-[clamp(2.1rem,8.4vw,3.1rem)] font-semibold leading-[1.22] tracking-[-0.01em] text-white transition-all [transition-duration:1400ms] [transition-delay:120ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
+                  showHeroCopy ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
                 }`}
               >
                 눈으로 확신하는 알래스카,
@@ -591,7 +607,7 @@ const Index = () => {
               </h1>
               <p
                 className={`text-[17px] font-medium text-white/95 transition-all [transition-duration:1300ms] [transition-delay:220ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
-                  showHeroCopy ? "translate-y-0 opacity-100 blur-0" : "translate-y-5 opacity-0 blur-[2px]"
+                  showHeroCopy ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
                 }`}
               >
                 2026년 7월 단 1회 확정 · 8박 9일
@@ -599,13 +615,13 @@ const Index = () => {
 
               <div
                 className={`grid grid-cols-1 gap-2 transition-all [transition-duration:1200ms] [transition-delay:180ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] sm:grid-cols-2 ${
-                  showHeroActions ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0 pointer-events-none"
+                  showHeroActions ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"
                 }`}
               >
                 <button
                   type="button"
                   onClick={() => setShowHeroCallSheet(true)}
-                  className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-[#e2b855] bg-accent px-4 text-[17px] font-bold text-primary shadow-[0_10px_24px_-18px_rgba(214,161,53,0.95)]"
+                  className="cta-premium cta-premium-accent inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-[#e2b855] bg-accent px-4 text-[17px] font-bold text-primary shadow-[0_10px_24px_-18px_rgba(214,161,53,0.95)]"
                 >
                   <PhoneCall className="h-5 w-5" />
                   {PRIMARY_CALL_COPY}
@@ -613,7 +629,7 @@ const Index = () => {
                 <button
                   type="button"
                   onClick={openInquiryModal}
-                  className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-white/65 bg-[rgba(5,17,34,0.24)] px-4 text-[17px] font-semibold text-white"
+                  className="cta-premium cta-premium-primary inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-white/65 bg-[rgba(5,17,34,0.24)] px-4 text-[17px] font-semibold text-white"
                 >
                   <MessageSquareText className="h-5 w-5" />
                   {"\uBB38\uC758 \uB0A8\uAE30\uAE30"}
@@ -624,7 +640,7 @@ const Index = () => {
           </div>
         </section>
 
-        <section id="wow-points" className="mx-auto mt-10 w-full max-w-5xl px-4">
+        <section id="wow-points" data-reveal className="mx-auto mt-10 w-full max-w-5xl px-4">
           <div className="mb-4 flex items-end justify-between gap-4">
             <h2 className="font-brand text-[30px] font-semibold leading-tight">핵심 장면 3개</h2>
             <p className="text-[16px] text-muted-foreground">사진 먼저, 상담은 한 번에</p>
@@ -646,7 +662,7 @@ const Index = () => {
           </div>
         </section>
 
-        <section id="summer-offer" className="mx-auto mt-10 w-full max-w-5xl px-4">
+        <section id="summer-offer" data-reveal className="mx-auto mt-10 w-full max-w-5xl px-4">
           <div className="rounded-3xl border bg-primary px-5 py-6 text-white shadow-elegant">
             <p className="text-[16px] text-white/80">{"\uC5EC\uB984 \uD655\uC815 \uC624\uD37C"}</p>
             <h2 className="mt-1 font-brand text-[31px] font-semibold leading-tight">{summerSummary.title}</h2>
@@ -662,7 +678,7 @@ const Index = () => {
                     surface: "hero",
                   })
                 }
-                className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[17px] font-bold text-primary"
+                className="cta-premium cta-premium-accent inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[17px] font-bold text-primary"
               >
                 <PhoneCall className="h-5 w-5" />
                 {contacts[0].name} - {PRIMARY_CALL_COPY}
@@ -676,7 +692,7 @@ const Index = () => {
                     surface: "hero",
                   })
                 }
-                className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-white/40 px-4 text-[17px] font-semibold"
+                className="cta-premium cta-premium-primary inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-white/40 px-4 text-[17px] font-semibold"
               >
                 <PhoneCall className="h-5 w-5" />
                 {contacts[1].name} - {PRIMARY_CALL_COPY}
@@ -818,7 +834,7 @@ const Index = () => {
 
         <ConversionBoosterSection />
 
-        <section id="gallery" className="mx-auto mt-10 w-full max-w-5xl px-4">
+        <section id="gallery" data-reveal className="mx-auto mt-10 w-full max-w-5xl px-4">
           <div className="mb-4 flex items-end justify-between gap-4">
             <div>
               <h2 className="font-brand text-[30px] font-semibold leading-tight">시즌 갤러리</h2>
@@ -918,7 +934,7 @@ const Index = () => {
                       surface: "gallery",
                     })
                   }
-                  className={`inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-4 text-[16px] font-bold ${
+                  className={`cta-premium inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-4 text-[16px] font-bold ${
                     index === 0 ? "bg-primary text-white" : "bg-accent text-primary"
                   }`}
                 >
@@ -930,7 +946,7 @@ const Index = () => {
           </div>
         </section>
 
-        <section id="season-status" className="mx-auto mt-10 w-full max-w-5xl px-4">
+        <section id="season-status" data-reveal className="mx-auto mt-10 w-full max-w-5xl px-4">
           <h2 className="mb-4 font-brand text-[30px] font-semibold leading-tight">시즌 공개 상태</h2>
           <div className="grid gap-4">
             {seasonCards.map((season) => (
@@ -982,7 +998,7 @@ const Index = () => {
           </div>
         </section>
 
-        <section id="faq" className="mx-auto mt-10 w-full max-w-5xl px-4">
+        <section id="faq" data-reveal className="mx-auto mt-10 w-full max-w-5xl px-4">
           <h2 className="mb-4 font-brand text-[30px] font-semibold leading-tight">자주 묻는 질문</h2>
           <div className="space-y-3">
             {faqItems.map((faq) => (
@@ -994,7 +1010,7 @@ const Index = () => {
           </div>
         </section>
 
-        <section id="final-call" className="mx-auto mt-10 w-full max-w-5xl px-4">
+        <section id="final-call" data-reveal className="mx-auto mt-10 w-full max-w-5xl px-4">
           <div className="rounded-3xl border bg-secondary px-5 py-6">
             <h2 className="font-brand text-[30px] font-semibold leading-tight">{PRIMARY_CALL_COPY}</h2>
             <p className="mt-2 text-[16px] text-foreground/80">{"\uC9E7\uAC8C \uBB3C\uC5B4\uBCF4\uC154\uB3C4 \uB429\uB2C8\uB2E4. \uAC00\uB2A5\uD55C \uC77C\uC815\uACFC \uD56D\uACF5\uC744 \uBC14\uB85C \uD655\uC778\uD574\uB4DC\uB9BD\uB2C8\uB2E4."}</p>
@@ -1011,7 +1027,7 @@ const Index = () => {
                       surface: "final",
                     })
                   }
-                  className="inline-flex min-h-[52px] items-center justify-between rounded-xl bg-white px-4 text-[17px] font-bold text-primary shadow-card"
+                  className="cta-premium cta-premium-primary inline-flex min-h-[52px] items-center justify-between rounded-xl bg-white px-4 text-[17px] font-bold text-primary shadow-card"
                 >
                   <span>{contact.name} - {PRIMARY_CALL_COPY}</span>
                   <span>{contact.phone}</span>
@@ -1022,7 +1038,7 @@ const Index = () => {
             <button
               type="button"
               onClick={openInquiryModal}
-              className="mt-3 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border border-primary/30 bg-white px-4 text-[16px] font-semibold text-primary"
+              className="cta-premium cta-premium-primary mt-3 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border border-primary/30 bg-white px-4 text-[16px] font-semibold text-primary"
             >
               <MessageSquareText className="h-5 w-5" />
               {"\uBB38\uC758 \uB0A8\uAE30\uAE30"}
@@ -1345,7 +1361,7 @@ const Index = () => {
                           surface: "final",
                         })
                       }
-                      className={`inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl px-4 text-[16px] font-bold ${
+                      className={`cta-premium inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl px-4 text-[16px] font-bold ${
                         index === 0 ? "bg-white text-primary" : "bg-accent text-primary"
                       }`}
                     >

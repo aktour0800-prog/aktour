@@ -35,6 +35,7 @@
     --ring: 41 61% 54%;
 
     --radius: 0.95rem;
+    --radius-lg: 1.5rem;
 
     --navy: 211 60% 19%;
     --navy-light: 211 46% 28%;
@@ -54,6 +55,7 @@
     --shadow-elegant: 0 14px 38px -18px hsla(216, 40%, 10%, 0.5);
     --shadow-card: 0 12px 24px -16px hsla(216, 40%, 10%, 0.35);
     --shadow-gold: 0 8px 30px -18px hsla(41, 61%, 54%, 0.6);
+    --focus-ring: 0 0 0 3px hsla(41, 78%, 58%, 0.38);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -67,6 +69,7 @@
 
   * {
     @apply border-border;
+    min-width: 0;
   }
 
   html {
@@ -78,9 +81,13 @@
     @apply bg-background text-foreground antialiased;
     font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, sans-serif;
     line-height: 1.65;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     background-image: radial-gradient(circle at 100% -20%, hsla(200, 72%, 88%, 0.38), transparent 40%),
       radial-gradient(circle at -10% 20%, hsla(43, 74%, 80%, 0.22), transparent 34%);
     background-attachment: fixed;
+    overflow-x: clip;
   }
 
   h1,
@@ -98,6 +105,49 @@
   .font-display,
   .font-brand {
     font-family: "Noto Serif KR", "Noto Sans KR", serif;
+  }
+
+  p,
+  li,
+  summary,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a,
+  button {
+    touch-action: manipulation;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  summary:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: 0.75rem;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
   }
 }
 
@@ -165,6 +215,13 @@
 
   .wow-glow-card {
     @apply relative overflow-hidden rounded-3xl border border-white/45 bg-white shadow-elegant;
+    transform: translateZ(0);
+    transition: transform 240ms ease, box-shadow 240ms ease;
+  }
+
+  .wow-glow-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 36px -20px hsla(216, 40%, 10%, 0.48);
   }
 
   .wow-glow-card::after {
@@ -180,7 +237,7 @@
   }
 
   .shorts-overlay {
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(3px);
   }
 
   .shorts-feed {
@@ -201,7 +258,7 @@
 
   @keyframes hero-kenburns-intro {
     0% {
-      transform: scale(1.04);
+      transform: scale(1.03);
     }
     100% {
       transform: scale(1);
@@ -209,8 +266,70 @@
   }
 
   .hero-kenburns-intro {
-    animation: hero-kenburns-intro 2000ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: hero-kenburns-intro 1100ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
     will-change: transform;
+  }
+
+  .hero-cinematic-card {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .hero-cinematic-card::after {
+    content: "";
+    position: absolute;
+    inset: -45% -20%;
+    background: linear-gradient(110deg, transparent 28%, rgba(255, 255, 255, 0.16) 46%, transparent 65%);
+    transform: translateX(-120%) rotate(10deg);
+    animation: hero-sheen 7200ms ease-in-out infinite;
+    pointer-events: none;
+    opacity: 0.3;
+  }
+
+  @keyframes hero-sheen {
+    0%,
+    24% {
+      transform: translateX(-120%) rotate(10deg);
+    }
+    40%,
+    100% {
+      transform: translateX(130%) rotate(10deg);
+    }
+  }
+
+  .cta-premium {
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
+    transition: transform 220ms ease, box-shadow 260ms ease, filter 260ms ease;
+  }
+
+  .cta-premium::after {
+    content: "";
+    position: absolute;
+    inset: -140% -42%;
+    background: linear-gradient(110deg, transparent 32%, rgba(255, 255, 255, 0.32) 50%, transparent 68%);
+    transform: translateX(-120%) rotate(11deg);
+    transition: transform 760ms ease;
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  .cta-premium:hover::after {
+    transform: translateX(120%) rotate(11deg);
+  }
+
+  .cta-premium:active {
+    transform: translateY(1px) scale(0.99);
+  }
+
+  .cta-premium-primary {
+    box-shadow: 0 10px 24px -18px hsla(217, 68%, 10%, 0.9);
+  }
+
+  .cta-premium-accent {
+    box-shadow: 0 12px 30px -20px hsla(41, 74%, 54%, 0.9);
   }
 
   @keyframes float-soft {
@@ -245,6 +364,22 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  [data-reveal].reveal-init {
+    opacity: 0;
+    transform: translateY(24px) scale(0.985);
+    filter: blur(4px);
+    transition: opacity 720ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 720ms cubic-bezier(0.22, 1, 0.36, 1),
+      filter 620ms ease;
+    will-change: opacity, transform, filter;
+  }
+
+  [data-reveal].reveal-init.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -261,6 +396,7 @@
 @layer components {
   .deadline-card {
     @apply rounded-3xl border border-white/25 bg-primary px-5 py-6 shadow-elegant;
+    backdrop-filter: blur(1px);
   }
 
   .deadline-chip {
@@ -290,3 +426,27 @@
   }
 }
 
+
+
+@media (max-width: 767px) {
+  body {
+    background-attachment: scroll;
+  }
+}
+
+@media (max-width: 430px) {
+  .wow-glow-card,
+  .waitlist-card,
+  .deadline-card,
+  .brand-shell {
+    border-radius: 1.35rem;
+  }
+
+  .section-title {
+    letter-spacing: -0.015em;
+  }
+
+  .cta-premium {
+    box-shadow: none;
+  }
+}

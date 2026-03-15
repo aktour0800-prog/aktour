@@ -312,7 +312,7 @@ const ConversionBoosterSection = () => {
 
   return (
     <>
-      <section className="mx-auto mt-8 w-full max-w-5xl px-4">
+      <section data-reveal className="mx-auto mt-8 w-full max-w-5xl px-4">
         <div className="deadline-card space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="deadline-chip">
@@ -340,7 +340,7 @@ const ConversionBoosterSection = () => {
             <button
               type="button"
               onClick={() => setShowSeatCallSheet(true)}
-              className="cta-pulse inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
+              className="cta-pulse cta-premium cta-premium-accent inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
             >
               <PhoneCall className="h-5 w-5" />
               {"\uC9C0\uAE08 \uC88C\uC11D \uD655\uC778 \uC804\uD654"}
@@ -354,7 +354,7 @@ const ConversionBoosterSection = () => {
                   surface: "seat_sheet",
                 })
               }
-              className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-white/35 px-4 text-[16px] font-semibold text-white"
+              className="cta-premium cta-premium-primary inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-white/35 px-4 text-[16px] font-semibold text-white"
             >
               {"\uC9C0\uAE08 \uC88C\uC11D \uD655\uC778 \uC804\uD654"}
             </a>
@@ -362,7 +362,7 @@ const ConversionBoosterSection = () => {
         </div>
       </section>
 
-      <section className="mx-auto mt-10 w-full max-w-5xl px-4">
+      <section data-reveal className="mx-auto mt-10 w-full max-w-5xl px-4">
         <div className="mb-4 flex items-end justify-between gap-4">
           <h2 className="font-brand text-[30px] font-semibold leading-tight">봄 · 가을 · 겨울 오픈 알림</h2>
           <p className="text-[16px] text-muted-foreground">시즌별로 모두 선택할 수 있습니다.</p>
@@ -543,7 +543,7 @@ const ConversionBoosterSection = () => {
                       surface: "seat_sheet",
                     })
                   }
-                  className="inline-flex min-h-[52px] items-center justify-between rounded-xl bg-primary px-4 text-[17px] font-bold text-white"
+                  className="cta-premium cta-premium-primary inline-flex min-h-[52px] items-center justify-between rounded-xl bg-primary px-4 text-[17px] font-bold text-white"
                 >
                   <span>{contact.name}</span>
                   <span>{contact.phone}</span>
@@ -620,7 +620,7 @@ const ConversionBoosterSection = () => {
                       surface: "season_card",
                     })
                   }
-                  className="inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
+                  className="cta-premium cta-premium-accent inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[16px] font-bold text-primary"
                 >
                   <PhoneCall className="h-5 w-5" />
                   {"\uC9C0\uAE08 \uC88C\uC11D \uD655\uC778 \uC804\uD654"}
