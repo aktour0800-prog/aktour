@@ -776,18 +776,19 @@ const Index = () => {
             <p className="mt-3 text-[17px] font-semibold text-accent">{summerSummary.period}</p>
             <p className="mt-1 text-[23px] font-bold">{summerSummary.price}</p>
             <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <Link
-                to="/summer-itinerary"
+              <a
+                href={`tel:${contacts[0].tel}`}
                 className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-[17px] font-bold text-primary"
               >
-                <CalendarDays className="h-5 w-5" />
-                여름 일정 상세
-              </Link>
+                <PhoneCall className="h-5 w-5" />
+                {"\uC5C4\uD0DC\uC778 \uB300\uD45C \uC0C1\uB2F4"}
+              </a>
               <a
                 href={`tel:${contacts[1].tel}`}
                 className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border border-white/40 px-4 text-[17px] font-semibold"
               >
-                정수미 대표 상담
+                <PhoneCall className="h-5 w-5" />
+                {"\uC815\uC218\uBBF8 \uB300\uD45C \uC0C1\uB2F4"}
               </a>
             </div>
           </div>
